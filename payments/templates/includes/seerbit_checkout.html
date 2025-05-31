@@ -1,0 +1,100 @@
+<!-- SeerBit Checkout Integration -->
+<div id="seerbit-checkout-container">
+    <div id="seerbit-loading" style="display: none;">
+        <p>Redirecting to SeerBit checkout...</p>
+    </div>
+</div>
+
+<script>
+class SeerBitCheckout {
+    constructor(options) {
+        this.options = options;
+        this.validateOptions();
+    }
+    
+    validateOptions() {
+        const required = ['amount', 'currency', 'email', 'full_name'];
+        for (let field of required) {
+            if (!this.options[field]) {
+                throw new Error(`Missing required field: ${field}`);
+            }
+        }
+    }
+    
+    async initiatePayment() {
+        try {
+            // Show loading
+            this.showLoading();
+            
+            // Create order
+            const response = await this.createOrder();
+            
+            if (response.status === 'success') {
+                // Redirect to SeerBit checkout
+                window.location.href = response.redirect_url;
+            } else {
+                throw new Error(response.message || 'Failed to create payment order');
+            }
+            
+        } catch (error) {
+            this.hideLoading();
+            this.handleError(error);
+        }
+    }
+    
+    async createOrder() {
+        const response = await fetch('/api/method/payments.payment_gateways.api.create_seerbit_order', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Frappe-CSRF-Token': frappe.csrf_token
+            },
+            body: JSON.stringify(this.options)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const data = await response.json();
+        
+        if (data.message) {
+            return data.message;
+        } else {
+            throw new Error('Invalid response format');
+        }
+    }
+    
+    showLoading() {
+        document.getElementById('seerbit-loading').style.display = 'block';
+    }
+    
+    hideLoading() {
+        document.getElementById('seerbit-loading').style.display = 'none';
+    }
+    
+    handleError(error) {
+        console.error('SeerBit Checkout Error:', error);
+        alert('Payment initialization failed: ' + error.message);
+    }
+}
+
+// Usage example
+function initiateSeerBitPayment(paymentData) {
+    const checkout = new SeerBitCheckout(paymentData);
+    checkout.initiatePayment();
+}
+
+// Example usage:
+// initiateSeerBitPayment({
+//     amount: 1000,
+//     currency: 'NGN',
+//     email: 'customer@example.com',
+//     full_name: 'John Doe',
+//     mobile: '08012345678',
+//     callback_url: '/payment-callback',
+//     product_id: 'PROD001',
+//     product_description: 'Test Product'
+// });
+</script>
+<!-- End of SeerBit Checkout Integration -->

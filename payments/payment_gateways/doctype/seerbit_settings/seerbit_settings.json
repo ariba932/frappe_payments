@@ -1,0 +1,94 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "gateway_settings",
+  "is_enabled",
+  "sandbox_mode",
+  "public_key",
+  "private_key",
+  "webhook_secret",
+  "column_break_6",
+  "supported_currencies",
+  "supported_countries"
+ ],
+ "fields": [
+  {
+   "fieldname": "gateway_settings",
+   "fieldtype": "Section Break",
+   "label": "Gateway Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_enabled",
+   "fieldtype": "Check",
+   "label": "Enable SeerBit"
+  },
+  {
+   "default": "1",
+   "fieldname": "sandbox_mode",
+   "fieldtype": "Check",
+   "label": "Sandbox Mode"
+  },
+  {
+   "fieldname": "public_key",
+   "fieldtype": "Data",
+   "label": "Public Key",
+   "mandatory_depends_on": "is_enabled"
+  },
+  {
+   "fieldname": "private_key",
+   "fieldtype": "Password",
+   "label": "Private Key",
+   "mandatory_depends_on": "is_enabled"
+  },
+  {
+   "fieldname": "webhook_secret",
+   "fieldtype": "Password",
+   "label": "Webhook Secret"
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "NGN\nUSD\nGBP\nEUR",
+   "fieldname": "supported_currencies",
+   "fieldtype": "Small Text",
+   "label": "Supported Currencies"
+  },
+  {
+   "default": "NG\nUS\nGB",
+   "fieldname": "supported_countries",
+   "fieldtype": "Small Text",
+   "label": "Supported Countries"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-01-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Payment Gateways",
+ "name": "SeerBit Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

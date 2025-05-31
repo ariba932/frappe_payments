@@ -1,0 +1,22 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block page_content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="text-center">
+                <div class="alert alert-success">
+                    <h3><i class="fa fa-check-circle"></i> Payment Successful!</h3>
+                    <p>Your payment has been processed successfully.</p>
+                    {% if payment_reference %}
+                    <p><strong>Reference:</strong> {{ payment_reference }}</p>
+                    {% endif %}
+                </div>
+                <a href="/" class="btn btn-primary">Continue</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

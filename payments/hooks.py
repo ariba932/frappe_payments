@@ -107,6 +107,16 @@ override_doctype_class = {"Web Form": "payments.overrides.payment_webform.Paymen
 # 		"on_trash": "method"
 # 	}
 # }
+# Add SeerBit specific hooks
+doc_events = {
+    # ... existing doc_events ...
+    
+    "SeerBit Order": {
+        "on_payment_captured": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_captured",
+        "on_payment_failed": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_failed"
+    }
+}
+
 
 # Scheduled Tasks
 # ---------------
@@ -115,6 +125,9 @@ scheduler_events = {
 	"all": [
 		"payments.payment_gateways.doctype.razorpay_settings.razorpay_settings.capture_payment",
 	],
+    "hourly": [
+        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payments"
+    ],
 }
 
 # Testing
@@ -179,3 +192,23 @@ override_whitelisted_methods = {
 # Recommended only for DocTypes which have limited documents with untranslated names
 # For example: Role, Gender, etc.
 # translated_search_doctypes = []
+
+# Website route overrides for payment pages by seerbit
+website_route_rules = [
+    {"from_route": "/payment-success", "to_route": "payment_success"},
+    {"from_route": "/payment-failed", "to_route": "payment_failed"},
+    {"from_route": "/payment-error", "to_route": "payment_error"},
+]
+
+# Fixtures for installation
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [
+            ["name", "in", [
+                "Web Form-seerbit_payment_gateway",
+                "Payment Gateway-seerbit_supported"
+            ]]
+        ]
+    }
+]
