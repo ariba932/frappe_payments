@@ -195,9 +195,9 @@ override_whitelisted_methods = {
 
 # Website route overrides for payment pages by seerbit
 website_route_rules = [
-    {"from_route": "/payment-success", "to_route": "payment_success"},
-    {"from_route": "/payment-failed", "to_route": "payment_failed"},
-    {"from_route": "/payment-error", "to_route": "payment_error"},
+    {"from_route": "/seerbit_payment_success", "to_route": "payment_success"},
+    {"from_route": "/seerbit_payment_failed", "to_route": "payment_failed"},
+    {"from_route": "/seerbit_payment_error", "to_route": "payment_error"},
 ]
 
 # Fixtures for installation

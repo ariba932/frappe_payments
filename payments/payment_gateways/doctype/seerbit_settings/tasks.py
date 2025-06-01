@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 import frappe
 from frappe import _
-from frappe.utils import add_hours, now
+from frappe.utils import now
+from datetime import timedelta
 
+def add_hours(dt, hours):
+    return dt + timedelta(hours=hours)
 
 def verify_pending_payments():
     """Verify pending SeerBit payments that are older than 1 hour"""

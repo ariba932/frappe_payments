@@ -1,6 +1,6 @@
 {% extends "templates/web.html" %}
 
-{% block title %}Payment Failed{% endblock %}
+{% block title %}Payment Error{% endblock %}
 
 {% block page_content %}
 <div class="container">
@@ -8,7 +8,7 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="text-center">
                 <div class="alert alert-danger">
-                    <h3><i class="fa fa-times-circle"></i> Payment Failed</h3>
+                    <h3><i class="fa fa-times-circle"></i> Payment Error</h3>
                     <p>We could not process your payment. Please try again.</p>
                     {% if payment_reference %}
                     <p><strong>Reference:</strong> {{ payment_reference }}</p>

@@ -38,7 +38,7 @@ def create_seerbit_order(**kwargs):
             "customer_email": kwargs["email"],
             "customer_name": kwargs["full_name"],
             "customer_mobile": kwargs.get("mobile", ""),
-            "callback_url": kwargs.get("callback_url", frappe.utils.get_url("/api/method/payments.payment_gateways.api.seerbit_callback")),
+            "callback_url": kwargs.get("callback_url", frappe.utils.get_url("/api/method/payments.payment_gateways.seerbit_api.seerbit_callback")),
             "status": "Pending"
         })
         order.insert(ignore_permissions=True)
@@ -125,9 +125,9 @@ def seerbit_callback():
         
         # Redirect to success/failure page
         if order.status == "Paid":
-            redirect_url = "/payment-success?reference=" + payment_reference
+            redirect_url = "/seerbit_payment_success?reference=" + payment_reference
         else:
-            redirect_url = "/payment-failed?reference=" + payment_reference
+            redirect_url = "/seerbit_payment_failed?reference=" + payment_reference
         
         frappe.local.response["type"] = "redirect"
         frappe.local.response["location"] = redirect_url
@@ -135,7 +135,7 @@ def seerbit_callback():
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "SeerBit Callback Error")
         frappe.local.response["type"] = "redirect"
-        frappe.local.response["location"] = "/payment-error"
+        frappe.local.response["location"] = "/seerbit_payment_error"
 
 
 def verify_webhook_signature():
