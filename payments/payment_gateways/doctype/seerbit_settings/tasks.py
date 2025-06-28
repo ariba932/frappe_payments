@@ -3,9 +3,11 @@
 import frappe
 from frappe import _
 from frappe.utils import now
-from datetime import timedelta
+from datetime import datetime,timedelta
 
 def add_hours(dt, hours):
+    if isinstance(dt, str):
+        dt = datetime.strptime(dt, "%Y-%m-%d %H:%M:%S.%f")  # or use parse_datetime from frappe.utils
     return dt + timedelta(hours=hours)
 
 def verify_pending_payments():
