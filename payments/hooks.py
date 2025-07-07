@@ -64,13 +64,13 @@ app_license = "MIT"
 # ------------
 
 before_install = "payments.utils.before_install"
-after_install = "payments.utils.make_custom_fields"
+after_install = ["payments.utils.make_custom_fields","payments.utils.create_custom_fields" ]
 
 # Uninstallation
 # ------------
 
 before_uninstall = "payments.utils.delete_custom_fields"
-# after_uninstall = "pay.uninstall.after_uninstall"
+after_uninstall = "payments.utils.delete_seerbit_custom_fields"
 
 # Desk Notifications
 # ------------------
@@ -126,7 +126,8 @@ scheduler_events = {
 		"payments.payment_gateways.doctype.razorpay_settings.razorpay_settings.capture_payment",
 	],
     "hourly": [
-        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payments"
+        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payments",
+        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payouts"
     ],
 }
 
@@ -141,63 +142,13 @@ before_tests = "erpnext.setup.utils.before_tests"  # To setup company and accoun
 override_whitelisted_methods = {
 	"frappe.website.doctype.web_form.web_form.accept": "payments.overrides.payment_webform.accept"
 }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "pay.task.get_dashboard_data"
-# }
 
-# exempt linked doctypes from being automatically cancelled
-#
-# auto_cancel_exempted_doctypes = ["Auto Repeat"]
-
-
-# User Data Protection
-# --------------------
-
-# user_data_fields = [
-# 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_3}",
-# 		"strict": False,
-# 	},
-# 	{
-# 		"doctype": "{doctype_4}"
-# 	}
-# ]
-
-# Authentication and authorization
-# --------------------------------
-
-# auth_hooks = [
-# 	"pay.auth.validate"
-# ]
-
-# Translation
-# --------------------------------
-
-# Make link fields search translated document names for these DocTypes
-# Recommended only for DocTypes which have limited documents with untranslated names
-# For example: Role, Gender, etc.
-# translated_search_doctypes = []
-
-# Website route overrides for payment pages by seerbit
+# Webhook endpoints for Seerbit notifications
 website_route_rules = [
     {"from_route": "/seerbit_payment_success", "to_route": "payment_success"},
     {"from_route": "/seerbit_payment_failed", "to_route": "payment_failed"},
     {"from_route": "/seerbit_payment_error", "to_route": "payment_error"},
+    {"from_route": "/api/method/seerbit_payout_webhook", "to_route": "payments.payment_gateways.doctype.seerbit_payout.seerbit_payout.seerbit_payout_webhook"},
 ]
 
 # Fixtures for installation

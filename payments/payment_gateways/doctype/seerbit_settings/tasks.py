@@ -89,3 +89,12 @@ def cleanup_old_orders():
             frappe.get_traceback(),
             "SeerBit Cleanup Task Error"
         )
+
+def verify_pending_payouts():
+    """Verify pending SeerBit payouts (new task)"""
+    try:
+        settings = frappe.get_doc("SeerBit Settings")
+        if settings.is_enabled:
+            settings.auto_validate_pending_payouts()
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "SeerBit Payout Verification Task Error")

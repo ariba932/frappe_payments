@@ -13,4 +13,19 @@ frappe.ui.form.on("SeerBit Settings", {
       });
     });
   },
+  refresh: function(frm) {
+      if (frm.doc.is_enabled) {
+          frm.add_custom_button(__('Refresh Bank Codes'), function() {
+              frappe.call({
+                  method: 'refresh_bank_codes',
+                  doc: frm.doc,
+                  callback: function(r) {
+                      if (!r.exc) {
+                          frm.reload_doc();
+                      }
+                  }
+              });
+          });
+      }
+  },
 });

@@ -1,0 +1,30 @@
+{
+ "doctype": "DocType",
+ "name": "SeerBit Payout",
+ "module": "Payments",
+ "autoname": "format:SB-PAYOUT-{YY}{MM}{DD}{HH}{######}",
+ "fields": [
+  {"fieldname": "payout_reference", "fieldtype": "Data", "label": "Payout Reference", "reqd": 1},
+  {"fieldname": "status", "fieldtype": "Select", "label": "Status", "options": "Pending\nProcessing\nPaid\nFailed", "default": "Pending"},
+  {"fieldname": "amount", "fieldtype": "Currency", "label": "Amount", "reqd": 1},
+  {"fieldname": "currency", "fieldtype": "Data", "label": "Currency", "reqd": 1},
+  {"fieldname": "beneficiary_type", "fieldtype": "Select", "label": "Beneficiary Type", "options": "Vendor\nEmployee\nOther", "reqd": 1},
+  {"fieldname": "beneficiary", "fieldtype": "Data", "label": "Beneficiary", "reqd": 1},
+  {"fieldname": "erpnext_linked_doc", "fieldtype": "Dynamic Link", "label": "Linked ERPNext Doc", "options": "beneficiary_type"},
+  {"fieldname": "bank_account", "fieldtype": "Data", "label": "Bank Account", "reqd": 1},
+  {"fieldname": "bank_code", "fieldtype": "Data", "label": "Bank Code", "reqd": 1},
+  {"fieldname": "beneficiary_name", "fieldtype": "Data", "label": "Beneficiary Name", "reqd": 1},
+  {"fieldname": "beneficiary_email", "fieldtype": "Data", "label": "Beneficiary Email"},
+  {"fieldname": "beneficiary_mobile", "fieldtype": "Data", "label": "Beneficiary Mobile"},
+  {"fieldname": "bank_name", "fieldtype": "Data", "label": "Bank Name"},
+  {"fieldname": "is_bulk_payout", "fieldtype": "Check", "label": "Is Bulk Payout", "default": 0},
+  {"fieldname": "gateway_response", "fieldtype": "Long Text", "label": "Gateway Response", "read_only": 1},
+  {"fieldname": "narration", "fieldtype": "Data", "label": "Narration"},
+  {"fieldname": "created_at", "fieldtype": "Datetime", "label": "Created At"},
+  {"fieldname": "updated_at", "fieldtype": "Datetime", "label": "Updated At"},
+  {"fieldname": "meta_data", "fieldtype": "Long Text", "label": "Meta Data", "read_only": 1}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1}
+ ]
+}

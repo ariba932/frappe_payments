@@ -1,0 +1,24 @@
+{
+ "doctype": "DocType",
+ "name": "SeerBit Bank Code",
+ "module": "Payments",
+ "autoname": "field:bank_code",
+ "title_field": "bank_name",
+ "fields": [
+  {"fieldname": "bank_details", "fieldtype": "Section Break", "label": "Bank Details"},
+  {"fieldname": "bank_code", "fieldtype": "Data", "label": "Bank Code", "reqd": 1, "unique": 1},
+  {"fieldname": "bank_name", "fieldtype": "Data", "label": "Bank Name", "reqd": 1},
+  {"fieldname": "country", "fieldtype": "Data", "label": "Country", "default": "NG"},
+  {"fieldname": "column_break_4", "fieldtype": "Column Break"},
+  {"fieldname": "is_active", "fieldtype": "Check", "label": "Is Active", "default": 1},
+  {"fieldname": "last_updated", "fieldtype": "Datetime", "label": "Last Updated", "read_only": 1},
+  {"fieldname": "gateway_info", "fieldtype": "Section Break", "label": "Gateway Information"},
+  {"fieldname": "gateway_response", "fieldtype": "Long Text", "label": "Gateway Response", "read_only": 1}
+ ],
+ "permissions": [
+  {"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1},
+  {"role": "Accounts Manager", "read": 1, "write": 1, "create": 1}
+ ],
+ "sort_field": "bank_name",
+ "sort_order": "ASC"
+}

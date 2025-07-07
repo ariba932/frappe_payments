@@ -208,3 +208,231 @@ def erpnext_app_import_guard():
 		yield
 	except ImportError:
 		frappe.throw(msg, title=_("Missing ERPNext App"))
+
+
+## --- Custom fields to drive Seerbit Payout integrations with Employee, Supplier, etc 
+def create_custom_fields():
+    """Create custom fields for SeerBit integration"""
+    
+    # Bank custom fields
+    frappe.make_property_setter("Bank", None, "allow_rename", 0, "Int")
+    
+    custom_fields = {
+        "Bank": [
+            {
+                "fieldname": "seerbit_bank_code",
+                "fieldtype": "Data",
+                "label": "SeerBit Bank Code",
+                "insert_after": "bank_name"
+            },
+            {
+                "fieldname": "payment_gateway_source",
+                "fieldtype": "Data",
+                "label": "Payment Gateway Source",
+                "insert_after": "seerbit_bank_code",
+                "read_only": 1
+            }
+        ],
+        "Bank Account": [
+            {
+                "fieldname": "seerbit_enabled",
+                                "fieldtype": "Check",
+                "label": "Enable SeerBit Payouts",
+                "insert_after": "is_default",
+                "default": 0
+            },
+            {
+                "fieldname": "seerbit_bank_code",
+                "fieldtype": "Link",
+                "label": "SeerBit Bank Code",
+                "options": "SeerBit Bank Code",
+                "insert_after": "seerbit_enabled",
+                "depends_on": "seerbit_enabled"
+            }
+        ],
+        "Employee": [
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Enable SeerBit Salary Payout",
+                "insert_after": "bank_ac_no",
+                "default": 0
+            },
+            {
+                "fieldname": "seerbit_bank_code",
+                "fieldtype": "Link",
+                "label": "SeerBit Bank Code",
+                "options": "SeerBit Bank Code",
+                "insert_after": "seerbit_payout_enabled",
+                                "depends_on": "seerbit_payout_enabled"
+            }
+        ],
+        "Supplier": [
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Enable SeerBit Payouts",
+                "insert_after": "default_bank_account",
+                "default": 0
+            },
+            {
+                "fieldname": "seerbit_bank_code",
+                "fieldtype": "Link",
+                "label": "SeerBit Bank Code",
+                "options": "SeerBit Bank Code",
+                "insert_after": "seerbit_payout_enabled",
+                "depends_on": "seerbit_payout_enabled"
+            }
+        ],
+        "Salary Slip": [
+            {
+                "fieldname": "seerbit_payout_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payout Reference",
+                "insert_after": "net_pay",
+                "read_only": 1
+            },
+                        {
+                "fieldname": "seerbit_payout_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payout Status",
+                "options": "Not Initiated\nPending\nProcessing\nPaid\nFailed",
+                "insert_after": "seerbit_payout_reference",
+                "default": "Not Initiated",
+                "read_only": 1
+            }
+        ]
+    }
+    
+    for doctype, fields in custom_fields.items():
+        for field in fields:
+            create_custom_field(doctype, field)
+
+def create_custom_field(doctype, field_dict):
+    """Create custom field if it doesn't exist"""
+    field_name = field_dict["fieldname"]
+    if not frappe.db.exists("Custom Field", f"{doctype}-{field_name}"):
+        field_dict["dt"] = doctype
+        field_dict["doctype"] = "Custom Field"
+        doc = frappe.get_doc(field_dict)
+        doc.insert(ignore_permissions=True)
+
+
+def delete_seerbit_custom_fields():
+	"""Delete all SeerBit-related custom fields when uninstalling"""
+	click.secho("* Uninstalling SeerBit Custom Fields")
+	
+	# Define all SeerBit custom fields to be removed
+	seerbit_custom_fields = {
+		"Bank": [
+			"seerbit_bank_code",
+			"payment_gateway_source"
+		],
+		"Bank Account": [
+			"seerbit_enabled",
+			"seerbit_bank_code"
+		],
+		"Employee": [
+			"seerbit_payout_enabled",
+			"seerbit_bank_code"
+		],
+		"Supplier": [
+			"seerbit_payout_enabled",
+			"seerbit_bank_code"
+		],
+		"Salary Slip": [
+			"seerbit_payout_reference",
+			"seerbit_payout_status"
+		]
+	}
+	
+	# Delete custom fields
+	for doctype, fieldnames in seerbit_custom_fields.items():
+		for fieldname in fieldnames:
+			custom_field_name = f"{doctype}-{fieldname}"
+			if frappe.db.exists("Custom Field", custom_field_name):
+				try:
+					frappe.db.delete("Custom Field", {"name": custom_field_name})
+					click.secho(f"  - Deleted custom field: {custom_field_name}")
+				except Exception as e:
+					click.secho(f"  - Error deleting {custom_field_name}: {str(e)}", fg="red")
+		
+		# Clear cache for each doctype
+		frappe.clear_cache(doctype=doctype)
+	
+	# Delete SeerBit Bank Code records if they exist
+	if frappe.db.exists("DocType", "SeerBit Bank Code"):
+		try:
+			# Delete all SeerBit Bank Code records
+			frappe.db.sql("DELETE FROM `tabSeerBit Bank Code`")
+			click.secho("  - Deleted all SeerBit Bank Code records")
+		except Exception as e:
+			click.secho(f"  - Error deleting SeerBit Bank Code records: {str(e)}", fg="red")
+	
+	# Delete SeerBit Payout records if they exist
+	if frappe.db.exists("DocType", "SeerBit Payout"):
+		try:
+			# Delete all SeerBit Payout records
+			frappe.db.sql("DELETE FROM `tabSeerBit Payout`")
+			click.secho("  - Deleted all SeerBit Payout records")
+		except Exception as e:
+			click.secho(f"  - Error deleting SeerBit Payout records: {str(e)}", fg="red")
+	
+	# Delete SeerBit Order records if they exist
+	if frappe.db.exists("DocType", "SeerBit Order"):
+		try:
+			# Delete all SeerBit Order records
+			frappe.db.sql("DELETE FROM `tabSeerBit Order`")
+			click.secho("  - Deleted all SeerBit Order records")
+		except Exception as e:
+			click.secho(f"  - Error deleting SeerBit Order records: {str(e)}", fg="red")
+	
+	# Remove property setters for Bank doctype
+	try:
+		frappe.db.delete("Property Setter", {
+			"doc_type": "Bank",
+			"property": "allow_rename",
+			"property_type": "Int"
+		})
+		click.secho("  - Removed Bank property setter")
+	except Exception as e:
+		click.secho(f"  - Error removing Bank property setter: {str(e)}", fg="red")
+	
+	# Commit changes
+	frappe.db.commit()
+	click.secho("* SeerBit Custom Fields uninstallation completed", fg="green")
+
+
+def cleanup_seerbit_bank_records():
+	"""Clean up ERPNext Bank records created by SeerBit"""
+	try:
+		# Find all Bank records with SeerBit as source
+		banks_with_seerbit = frappe.get_all("Bank", 
+			filters={"payment_gateway_source": "SeerBit"},
+			fields=["name", "bank_name", "seerbit_bank_code"]
+		)
+		
+		for bank in banks_with_seerbit:
+			try:
+				# Check if this bank has any linked accounts or transactions
+				linked_accounts = frappe.get_all("Bank Account", 
+					filters={"bank": bank["name"]},
+					fields=["name"]
+				)
+				
+				if not linked_accounts:
+					# Safe to delete if no linked accounts
+					frappe.delete_doc("Bank", bank["name"], ignore_permissions=True)
+					click.secho(f"  - Deleted Bank: {bank['bank_name']}")
+				else:
+					# Just clear SeerBit fields if there are linked accounts
+					bank_doc = frappe.get_doc("Bank", bank["name"])
+					bank_doc.seerbit_bank_code = ""
+					bank_doc.payment_gateway_source = ""
+					bank_doc.save(ignore_permissions=True)
+					click.secho(f"  - Cleared SeerBit fields from Bank: {bank['bank_name']}")
+			except Exception as e:
+				click.secho(f"  - Error processing Bank {bank['bank_name']}: {str(e)}", fg="red")
+	
+	except Exception as e:
+		click.secho(f"  - Error cleaning up SeerBit bank records: {str(e)}", fg="red")
