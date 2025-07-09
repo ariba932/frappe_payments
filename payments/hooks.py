@@ -66,11 +66,22 @@ app_license = "MIT"
 before_install = "payments.utils.before_install"
 after_install = ["payments.utils.make_custom_fields","payments.utils.create_custom_fields" ]
 
+# Installation hooks
+# ------------------
+after_install = "payments.utils.utils.create_custom_fields"
+
 # Uninstallation
 # ------------
 
 before_uninstall = "payments.utils.delete_custom_fields"
 after_uninstall = "payments.utils.delete_seerbit_custom_fields"
+
+# Uninstallation hooks  
+# --------------------
+before_uninstall = [
+    "payments.utils.utils.delete_seerbit_custom_fields",
+    "payments.utils.utils.cleanup_seerbit_bank_records"
+]
 
 # Desk Notifications
 # ------------------

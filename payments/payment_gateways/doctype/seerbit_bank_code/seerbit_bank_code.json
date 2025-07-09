@@ -1,7 +1,7 @@
 {
  "doctype": "DocType",
  "name": "SeerBit Bank Code",
- "module": "Payments",
+ "module": "Payment_gateways",
  "autoname": "field:bank_code",
  "title_field": "bank_name",
  "fields": [

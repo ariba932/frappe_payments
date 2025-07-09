@@ -276,82 +276,83 @@ class SeerBitSettings(Document):
                 frappe.log_error(frappe.get_traceback(), f"Auto payout validation failed for {payout['name']}")
 
 
-#Method to handle the syncrhonization of bank details from seearbit
-def refresh_bank_codes(self):
-    """Refresh bank codes from Seerbit API"""
-    if not self.is_enabled:
-        frappe.throw(_("SeerBit is not enabled"))
-    
-    encrypted_key = self.get_encrypted_key()
-    base_url = "https://seerbitapi.com" if not self.sandbox_mode else "https://sandbox.seerbitapi.com"
-    url = f"{base_url}/api/v2/banks"
-    headers = {
-        "Authorization": f"Bearer {encrypted_key}"
-    }
-    
-    try:
-        response = requests.get(url, headers=headers, timeout=30)
-        if response.status_code == 200:
-            result = response.json()
-            if result.get("status") == "SUCCESS":
-                banks = result.get("data", [])
-                self.sync_bank_codes(banks)
-                frappe.msgprint(_("Successfully refreshed {0} bank codes").format(len(banks)))
+    #Method to handle the syncrhonization of bank details from seearbit
+    @frappe.whitelist(allow_guest=True, xss_safe=True)
+    def refresh_bank_codes(self):
+        """Refresh bank codes from Seerbit API"""
+        if not self.is_enabled:
+            frappe.throw(_("SeerBit is not enabled"))
+        
+        encrypted_key = self.get_encrypted_key()
+        base_url = "https://pocket.seerbitapi.com" if not self.sandbox_mode else "https://sandbox.seerbitapi.com"
+        url = f"{base_url}/pocket/banks"
+        headers = {
+            "Authorization": f"Bearer {encrypted_key}"
+        }
+        
+        try:
+            response = requests.get(url, headers=headers, timeout=30)
+            if response.status_code == 200:
+                result = response.json()
+                if result.get("status") == "SUCCESS":
+                    banks = result.get("data", [])
+                    self.sync_bank_codes(banks)
+                    frappe.msgprint(_("Successfully refreshed {0} bank codes").format(len(banks)))
+                else:
+                    frappe.throw(_("Failed to fetch bank codes: {0}").format(result.get("message", "Unknown error")))
             else:
-                frappe.throw(_("Failed to fetch bank codes: {0}").format(result.get("message", "Unknown error")))
-        else:
-            frappe.throw(_("API request failed with status: {0}").format(response.status_code))
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "SeerBit Bank Code Refresh Error")
-        frappe.throw(_("Error refreshing bank codes: {0}").format(str(e)))
+                frappe.throw(_("API request failed with status: {0}").format(response.status_code))
+        except Exception as e:
+            frappe.log_error(frappe.get_traceback(), "SeerBit Bank Code Refresh Error")
+            frappe.throw(_("Error refreshing bank codes: {0}").format(str(e)))
 
-def sync_bank_codes(self, banks):
-    """Sync bank codes to SeerBit Bank Code doctype and ERPNext Bank"""
-    for bank_data in banks:
-        bank_code = bank_data.get("code")
-        bank_name = bank_data.get("name")
-        
-        if not bank_code or not bank_name:
-            continue
+    def sync_bank_codes(self, banks):
+        """Sync bank codes to SeerBit Bank Code doctype and ERPNext Bank"""
+        for bank_data in banks:
+            bank_code = bank_data.get("code")
+            bank_name = bank_data.get("name")
             
-        # Create/Update SeerBit Bank Code
-        if frappe.db.exists("SeerBit Bank Code", bank_code):
-            doc = frappe.get_doc("SeerBit Bank Code", bank_code)
-            doc.bank_name = bank_name
-            doc.is_active = bank_data.get("is_active", 1)
-            doc.save(ignore_permissions=True)
-        else:
-            doc = frappe.get_doc({
-                "doctype": "SeerBit Bank Code",
-                "bank_code": bank_code,
-                "bank_name": bank_name,
-                "is_active": bank_data.get("is_active", 1)
-            })
-            doc.insert(ignore_permissions=True)
-        
-        # Create/Update ERPNext Bank
-        self.sync_to_erpnext_bank(bank_code, bank_name)
+            if not bank_code or not bank_name:
+                continue
+                
+            # Create/Update SeerBit Bank Code
+            if frappe.db.exists("SeerBit Bank Code", bank_code):
+                doc = frappe.get_doc("SeerBit Bank Code", bank_code)
+                doc.bank_name = bank_name
+                doc.is_active = bank_data.get("is_active", 1)
+                doc.save(ignore_permissions=True)
+            else:
+                doc = frappe.get_doc({
+                    "doctype": "SeerBit Bank Code",
+                    "bank_code": bank_code,
+                    "bank_name": bank_name,
+                    "is_active": bank_data.get("is_active", 1)
+                })
+                doc.insert(ignore_permissions=True)
+            
+            # Create/Update ERPNext Bank
+            self.sync_to_erpnext_bank(bank_code, bank_name)
 
-def sync_to_erpnext_bank(self, bank_code, bank_name):
-    """Sync bank to ERPNext Bank doctype"""
-    bank_name_clean = bank_name.replace("Limited", "Ltd").replace("PLC", "Plc")
-    
-    if not frappe.db.exists("Bank", bank_name_clean):
-        try:
-            bank_doc = frappe.get_doc({
-                "doctype": "Bank",
-                "bank_name": bank_name_clean,
-                "seerbit_bank_code": bank_code,
-                "payment_gateway_source": "SeerBit"
-            })
-            bank_doc.insert(ignore_permissions=True)
-        except Exception as e:
-            frappe.log_error(f"Failed to create Bank {bank_name}: {str(e)}", "Bank Creation Error")
-    else:
-        try:
-            bank_doc = frappe.get_doc("Bank", bank_name_clean)
-            bank_doc.seerbit_bank_code = bank_code
-            bank_doc.payment_gateway_source = "SeerBit"
-            bank_doc.save(ignore_permissions=True)
-        except Exception as e:
-            frappe.log_error(f"Failed to update Bank {bank_name}: {str(e)}", "Bank Update Error")
+    def sync_to_erpnext_bank(self, bank_code, bank_name):
+        """Sync bank to ERPNext Bank doctype"""
+        bank_name_clean = bank_name.replace("Limited", "Ltd").replace("PLC", "Plc")
+        
+        if not frappe.db.exists("Bank", bank_name_clean):
+            try:
+                bank_doc = frappe.get_doc({
+                    "doctype": "Bank",
+                    "bank_name": bank_name_clean,
+                    "seerbit_bank_code": bank_code,
+                    "payment_gateway_source": "SeerBit"
+                })
+                bank_doc.insert(ignore_permissions=True)
+            except Exception as e:
+                frappe.log_error(f"Failed to create Bank {bank_name}: {str(e)}", "Bank Creation Error")
+        else:
+            try:
+                bank_doc = frappe.get_doc("Bank", bank_name_clean)
+                bank_doc.seerbit_bank_code = bank_code
+                bank_doc.payment_gateway_source = "SeerBit"
+                bank_doc.save(ignore_permissions=True)
+            except Exception as e:
+                frappe.log_error(f"Failed to update Bank {bank_name}: {str(e)}", "Bank Update Error")

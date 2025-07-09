@@ -1,7 +1,7 @@
 {
  "doctype": "DocType",
  "name": "SeerBit Payout",
- "module": "Payments",
+ "module": "Payment_gateways",
  "autoname": "format:SB-PAYOUT-{YY}{MM}{DD}{HH}{######}",
  "fields": [
   {"fieldname": "payout_reference", "fieldtype": "Data", "label": "Payout Reference", "reqd": 1},
