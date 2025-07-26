@@ -5,7 +5,7 @@ from frappe.model.document import Document
 from frappe.utils.password import get_decrypted_password
 import requests
 import json
-from frappe.utils import get_request_site_address
+
 
 class SeerbitSettings(Document):
     supported_currencies = ["NGN", "USD", "GBP", "EUR"]
@@ -32,19 +32,14 @@ class SeerbitSettings(Document):
          #   frappe.throw(_("Private key not found"))
         
         key_combination = f"***.***"  # Masked for logging, never log real keys
-        doc = frappe.get_doc("Seerbit Settings")
-        private_key = doc.get_password("private_key")
-
         base_url = "https://seerbitapi.com" if not self.sandbox_mode else "https://sandbox.seerbitapi.com"
         url = f"{base_url}/api/v2/encrypt/keys"
         headers = {
             "Content-Type": "application/json"
         }
         data = {
-            "key": f"{private_key}.{self.public_key}"
+            "key": f"{self.private_key}.{self.public_key}"
         }
-        frappe.log_error("Keys - ",  data)
-
         last_exception = None
         for attempt in range(max_retries + 1):
             try:
@@ -67,28 +62,12 @@ class SeerbitSettings(Document):
         if last_exception:
             frappe.throw(_("Failed to get encrypted key after retries: {0}").format(str(last_exception)))
     
-    def get_environment(self):
-        if self.use_sandbox:
-            return "sandbox"
-        else: return "live"
-
-    def validate_transaction_currency(self, currency):
-        """Validate if currency is supported"""
-        supported_currencies = [c.strip() for c in self.supported_currencies.split('\n') if c.strip()]
-        
-        if currency not in supported_currencies:
-            frappe.throw(_("Currency {0} is not supported by SeerBit").format(currency))
-    
-
     def get_payment_url(self, **kwargs):
         """Create payment and return checkout URL"""
-        required_params = ["amount", "currency", "payer_email", "payer_name", "reference_docname"]
-        
+        required_params = ["amount", "currency", "email", "fullName", "paymentReference", "callbackUrl"]
         for param in required_params:
             if not kwargs.get(param):
                 frappe.throw(_("Missing required parameter: {0}").format(param))
-
-        callback_url = (get_request_site_address(True) 	+ "/api/method/payments.payment_gateways.seerbit_api.seerbit_callback")
         encrypted_key = self.get_encrypted_key()
         base_url = "https://seerbitapi.com" if not self.sandbox_mode else "https://sandbox.seerbitapi.com"
         url = f"{base_url}/api/v2/payments"
@@ -101,19 +80,17 @@ class SeerbitSettings(Document):
             "amount": str(kwargs["amount"]),
             "currency": kwargs["currency"],
             "country": kwargs.get("country", "NG"),
-            "paymentReference": kwargs["reference_docname"],
-            "email": kwargs.get("payer_email","hello@tevcng.com"),
-            "fullName": kwargs["payer_name"],
+            "paymentReference": kwargs["paymentReference"],
+            "email": kwargs["email"],
+            "fullName": kwargs["fullName"],
             "tokenize": kwargs.get("tokenize", "false"),
-            "callbackUrl": callback_url
+            "callbackUrl": kwargs["callbackUrl"]
         }
         if kwargs.get("productId"):
             payment_data["productId"] = kwargs["productId"]
         if kwargs.get("productDescription"):
             payment_data["productDescription"] = kwargs["productDescription"]
         last_exception = None
-        frappe.log_error(" Paymdata load", payment_data)
-
         for attempt in range(3):
             try:
                 response = requests.post(url, headers=headers, json=payment_data, timeout=30)
@@ -265,7 +242,7 @@ class SeerbitSettings(Document):
         last_exception = None
         for attempt in range(3):
             try:
-                response = requests.post(url, headers=headers, timeout=30)
+                response = requests.get(url, headers=headers, timeout=30)
                 if response.status_code == 200:
                     result = response.json()
                     if result.get("status") == "SUCCESS":

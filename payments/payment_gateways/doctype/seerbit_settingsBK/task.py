@@ -28,7 +28,7 @@ def verify_pending_payments():
         if not pending_orders:
             return
         
-        settings = frappe.get_doc("Seerbit Settings")
+        settings = frappe.get_doc("SeerBit Settings")
         
         if not settings.is_enabled:
             return
@@ -93,7 +93,7 @@ def cleanup_old_orders():
 def verify_pending_payouts():
     """Verify pending SeerBit payouts (new task)"""
     try:
-        settings = frappe.get_doc("Seerbit Settings")
+        settings = frappe.get_doc("SeerBit Settings")
         if settings.is_enabled:
             settings.auto_validate_pending_payouts()
     except Exception as e:
