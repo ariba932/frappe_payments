@@ -1,0 +1,345 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SAL-PAY-{YYYY}-{#####}",
+ "creation": "2024-08-13 20:30:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_1",
+  "payout_type",
+  "salary_slip",
+  "employee_advance",
+  "employee",
+  "employee_name",
+  "column_break_6",
+  "department",
+  "designation",
+  "payout_amount",
+  "currency",
+  "section_break_10",
+  "bank_account_number",
+  "bank_code",
+  "bank_name",
+  "account_name",
+  "column_break_15",
+  "verify_account",
+  "account_verified",
+  "verification_date",
+  "section_break_19",
+  "payout_reference",
+  "seerbit_transaction_id",
+  "status",
+  "column_break_23",
+  "otp_code",
+  "signature_hash",
+  "initiated_date",
+  "completed_date",
+  "section_break_28",
+  "narration",
+  "failure_reason",
+  "column_break_31",
+  "gateway_response",
+  "section_break_33",
+  "auto_create_accounting_entries",
+  "payment_entry",
+  "journal_entry"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Payout Details"
+  },
+  {
+   "fieldname": "payout_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Payout Type",
+   "options": "Salary\nAdvance\nExpense Reimbursement",
+   "reqd": 1,
+   "default": "Salary"
+  },
+  {
+   "depends_on": "eval:doc.payout_type=='Salary'",
+   "fieldname": "salary_slip",
+   "fieldtype": "Link",
+   "label": "Salary Slip",
+   "options": "Salary Slip"
+  },
+  {
+   "depends_on": "eval:doc.payout_type=='Advance'",
+   "fieldname": "employee_advance",
+   "fieldtype": "Link",
+   "label": "Employee Advance",
+   "options": "Employee Advance"
+  },
+  {
+   "fieldname": "employee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Employee",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "employee.employee_name",
+   "fieldname": "employee_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Employee Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_6",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "employee.department",
+   "fieldname": "department",
+   "fieldtype": "Link",
+   "label": "Department",
+   "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "employee.designation",
+   "fieldname": "designation",
+   "fieldtype": "Link",
+   "label": "Designation",
+   "options": "Designation",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payout_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Payout Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "default": "NGN"
+  },
+  {
+   "fieldname": "section_break_10",
+   "fieldtype": "Section Break",
+   "label": "Bank Details"
+  },
+  {
+   "fieldname": "bank_account_number",
+   "fieldtype": "Data",
+   "label": "Bank Account Number",
+   "reqd": 1
+  },
+  {
+   "fieldname": "bank_code",
+   "fieldtype": "Data",
+   "label": "Bank Code",
+   "reqd": 1
+  },
+  {
+   "fieldname": "bank_name",
+   "fieldtype": "Data",
+   "label": "Bank Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "account_name",
+   "fieldtype": "Data",
+   "label": "Account Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "verify_account",
+   "fieldtype": "Check",
+   "label": "Verify Account Before Payout"
+  },
+  {
+   "fieldname": "account_verified",
+   "fieldtype": "Check",
+   "label": "Account Verified",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verification_date",
+   "fieldtype": "Datetime",
+   "label": "Verification Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break",
+   "label": "Payout Status"
+  },
+  {
+   "fieldname": "payout_reference",
+   "fieldtype": "Data",
+   "label": "Payout Reference",
+   "read_only": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "seerbit_transaction_id",
+   "fieldtype": "Data",
+   "label": "SeerBit Transaction ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nPending Verification\nPending Approval\nProcessing\nCompleted\nFailed\nCancelled",
+   "default": "Draft"
+  },
+  {
+   "fieldname": "column_break_23",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "otp_code",
+   "fieldtype": "Data",
+   "label": "OTP Code",
+   "read_only": 1
+  },
+  {
+   "fieldname": "signature_hash",
+   "fieldtype": "Long Text",
+   "label": "Signature Hash",
+   "read_only": 1
+  },
+  {
+   "fieldname": "initiated_date",
+   "fieldtype": "Datetime",
+   "label": "Initiated Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "completed_date",
+   "fieldtype": "Datetime",
+   "label": "Completed Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_28",
+   "fieldtype": "Section Break",
+   "label": "Additional Information"
+  },
+  {
+   "fieldname": "narration",
+   "fieldtype": "Text",
+   "label": "Narration"
+  },
+  {
+   "fieldname": "failure_reason",
+   "fieldtype": "Text",
+   "label": "Failure Reason",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_31",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "gateway_response",
+   "fieldtype": "Long Text",
+   "label": "Gateway Response",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_33",
+   "fieldtype": "Section Break",
+   "label": "Accounting Integration"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_create_accounting_entries",
+   "fieldtype": "Check",
+   "label": "Auto Create Accounting Entries"
+  },
+  {
+   "fieldname": "payment_entry",
+   "fieldtype": "Link",
+   "label": "Payment Entry",
+   "options": "Payment Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "journal_entry",
+   "fieldtype": "Link",
+   "label": "Journal Entry",
+   "options": "Journal Entry",
+   "read_only": 1
+  }
+ ],
+ "icon": "fa fa-money",
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2024-08-13 20:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Salary Payout",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "HR User",
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

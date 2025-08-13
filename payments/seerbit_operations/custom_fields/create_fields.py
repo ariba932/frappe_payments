@@ -204,29 +204,6 @@ def create_seerbit_custom_fields():
             }
         ],
         
-        "Employee": [
-            {
-                "fieldname": "seerbit_bank_section",
-                "fieldtype": "Section Break",
-                "label": "SeerBit Bank Details",
-                "insert_after": "bank_ac_no",
-                "collapsible": 1
-            },
-            {
-                "fieldname": "seerbit_bank_code",
-                "fieldtype": "Data",
-                "label": "Bank Code",
-                "insert_after": "seerbit_bank_section"
-            },
-            {
-                "fieldname": "seerbit_account_verified",
-                "fieldtype": "Check",
-                "label": "Account Verified",
-                "insert_after": "seerbit_bank_code",
-                "default": 0
-            }
-        ],
-        
         "Department": [
             {
                 "fieldname": "seerbit_pocket_section",
@@ -259,6 +236,213 @@ def create_seerbit_custom_fields():
             }
         ],
         
+        "Employee": [
+            {
+                "fieldname": "seerbit_section_break",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payment Configuration",
+                "insert_after": "bank_ac_no",
+                "collapsible": 1
+            },
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Enable SeerBit Payouts",
+                "default": 0,
+                "insert_after": "seerbit_section_break"
+            },
+            {
+                "fieldname": "seerbit_bank_code",
+                "fieldtype": "Data",
+                "label": "SeerBit Bank Code",
+                "description": "Bank code for SeerBit payouts (e.g. 044 for Access Bank)",
+                "insert_after": "seerbit_payout_enabled"
+            },
+            {
+                "fieldname": "seerbit_payout_currency",
+                "fieldtype": "Link",
+                "label": "Default Payout Currency",
+                "options": "Currency",
+                "default": "NGN",
+                "insert_after": "seerbit_bank_code"
+            },
+            {
+                "fieldname": "seerbit_column_break",
+                "fieldtype": "Column Break",
+                "insert_after": "seerbit_payout_currency"
+            },
+            {
+                "fieldname": "seerbit_last_payout_date",
+                "fieldtype": "Date",
+                "label": "Last SeerBit Payout Date",
+                "read_only": 1,
+                "insert_after": "seerbit_column_break"
+            },
+            {
+                "fieldname": "seerbit_total_payouts",
+                "fieldtype": "Currency",
+                "label": "Total SeerBit Payouts",
+                "read_only": 1,
+                "insert_after": "seerbit_last_payout_date"
+            }
+        ],
+        
+        "Salary Slip": [
+            {
+                "fieldname": "seerbit_payout_section",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payout Information",
+                "insert_after": "net_pay",
+                "collapsible": 1
+            },
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Process via SeerBit",
+                "default": 0,
+                "insert_after": "seerbit_payout_section"
+            },
+            {
+                "fieldname": "seerbit_payout_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payout Reference",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_enabled"
+            },
+            {
+                "fieldname": "seerbit_payout_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payout Status",
+                "options": "Not Initiated\nProcessing\nCompleted\nFailed",
+                "default": "Not Initiated",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_reference"
+            },
+            {
+                "fieldname": "seerbit_column_break",
+                "fieldtype": "Column Break",
+                "insert_after": "seerbit_payout_status"
+            },
+            {
+                "fieldname": "seerbit_transaction_id",
+                "fieldtype": "Data",
+                "label": "SeerBit Transaction ID",
+                "read_only": 1,
+                "insert_after": "seerbit_column_break"
+            },
+            {
+                "fieldname": "seerbit_payout_date",
+                "fieldtype": "Datetime",
+                "label": "SeerBit Payout Date",
+                "read_only": 1,
+                "insert_after": "seerbit_transaction_id"
+            }
+        ],
+        
+        "Employee Advance": [
+            {
+                "fieldname": "seerbit_payout_section",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payout Information",
+                "insert_after": "advance_amount",
+                "collapsible": 1
+            },
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Process via SeerBit",
+                "default": 0,
+                "insert_after": "seerbit_payout_section"
+            },
+            {
+                "fieldname": "seerbit_payout_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payout Reference",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_enabled"
+            },
+            {
+                "fieldname": "seerbit_payout_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payout Status",
+                "options": "Not Initiated\nProcessing\nCompleted\nFailed",
+                "default": "Not Initiated",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_reference"
+            },
+            {
+                "fieldname": "seerbit_column_break",
+                "fieldtype": "Column Break",
+                "insert_after": "seerbit_payout_status"
+            },
+            {
+                "fieldname": "seerbit_transaction_id",
+                "fieldtype": "Data",
+                "label": "SeerBit Transaction ID",
+                "read_only": 1,
+                "insert_after": "seerbit_column_break"
+            },
+            {
+                "fieldname": "seerbit_payout_date",
+                "fieldtype": "Datetime",
+                "label": "SeerBit Payout Date",
+                "read_only": 1,
+                "insert_after": "seerbit_transaction_id"
+            }
+        ],
+        
+        "Expense Claim": [
+            {
+                "fieldname": "seerbit_payout_section",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payout Information",
+                "insert_after": "total_claimed_amount",
+                "collapsible": 1
+            },
+            {
+                "fieldname": "seerbit_payout_enabled",
+                "fieldtype": "Check",
+                "label": "Process via SeerBit",
+                "default": 0,
+                "insert_after": "seerbit_payout_section"
+            },
+            {
+                "fieldname": "seerbit_payout_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payout Reference",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_enabled"
+            },
+            {
+                "fieldname": "seerbit_payout_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payout Status",
+                "options": "Not Initiated\nProcessing\nCompleted\nFailed",
+                "default": "Not Initiated",
+                "read_only": 1,
+                "insert_after": "seerbit_payout_reference"
+            },
+            {
+                "fieldname": "seerbit_column_break",
+                "fieldtype": "Column Break",
+                "insert_after": "seerbit_payout_status"
+            },
+            {
+                "fieldname": "seerbit_transaction_id",
+                "fieldtype": "Data",
+                "label": "SeerBit Transaction ID",
+                "read_only": 1,
+                "insert_after": "seerbit_column_break"
+            },
+            {
+                "fieldname": "seerbit_payout_date",
+                "fieldtype": "Datetime",
+                "label": "SeerBit Payout Date",
+                "read_only": 1,
+                "insert_after": "seerbit_transaction_id"
+            }
+        ],
+        
         "Cost Center": [
             {
                 "fieldname": "seerbit_pocket_section",
@@ -286,3 +470,17 @@ def create_seerbit_custom_fields():
     }
     
     create_custom_fields(custom_fields)
+
+
+def execute():
+    """Execute the custom fields creation"""
+    try:
+        create_seerbit_custom_fields()
+        print("✅ SeerBit custom fields created successfully!")
+    except Exception as e:
+        print(f"❌ Error creating SeerBit custom fields: {str(e)}")
+        raise
+
+
+if __name__ == "__main__":
+    execute()

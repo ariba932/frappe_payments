@@ -5,7 +5,7 @@ import frappe
 from frappe.model.document import Document
 from frappe.utils import now, flt, add_days, get_url
 from payments.seerbit_integration.core.api_client import SeerBitAPIClient
-from payments.seerbit_integration.selling.invoice_payments import SeerBitInvoicePayment
+from payments.seerbit_integration.selling.invoice_payments import SeerBitSellingOperations
 
 
 class SeerBitPaymentRequest(Document):

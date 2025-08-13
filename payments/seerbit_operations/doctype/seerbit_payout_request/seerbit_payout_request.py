@@ -3,9 +3,9 @@
 
 import frappe
 from frappe.model.document import Document
-from frappe.utils import now, flt
+from frappe.utils import now, flt, add_days, get_url
 from payments.seerbit_integration.core.api_client import SeerBitAPIClient
-from payments.seerbit_integration.buying.enhanced_payout import SeerBitEnhancedPayout
+from payments.seerbit_integration.buying.supplier_payments import SeerBitBuyingOperations
 
 
 class SeerBitPayoutRequest(Document):
@@ -119,10 +119,10 @@ class SeerBitPayoutRequest(Document):
             self.db_set("status", "Processing")
             
             # Initialize Enhanced Payout
-            enhanced_payout = SeerBitEnhancedPayout()
+            buying_ops = SeerBitBuyingOperations()
             
             # Step 1: Authenticate
-            auth_response = enhanced_payout.authenticate()
+            auth_response = buying_ops.authenticate()
             
             # Step 2: Generate OTP
             otp_data = {
@@ -130,7 +130,7 @@ class SeerBitPayoutRequest(Document):
                 "currency": self.currency,
                 "pocket_id": self.pocket_id
             }
-            otp_response = enhanced_payout.generate_otp(otp_data)
+            otp_response = buying_ops.generate_otp(otp_data)
             
             if otp_response.get("status") == "SUCCESS":
                 otp_info = otp_response.get("data", {})
@@ -143,7 +143,7 @@ class SeerBitPayoutRequest(Document):
                     "otp": otp_info.get("otp"),
                     "pocket_id": self.pocket_id
                 }
-                signature_response = enhanced_payout.generate_signature(signature_data)
+                signature_response = buying_ops.generate_signature(signature_data)
                 
                 if signature_response.get("status") == "SUCCESS":
                     signature_info = signature_response.get("data", {})
@@ -162,7 +162,7 @@ class SeerBitPayoutRequest(Document):
                         "pocket_id": self.pocket_id
                     }
                     
-                    final_response = enhanced_payout.execute_enhanced_payout(payout_data)
+                    final_response = buying_ops.execute_enhanced_payout(payout_data)
                     
                     if final_response.get("status") == "SUCCESS":
                         payout_info = final_response.get("data", {})
