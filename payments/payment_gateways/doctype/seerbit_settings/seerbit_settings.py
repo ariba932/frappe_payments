@@ -170,7 +170,41 @@ class SeerbitSettings(Document):
             frappe.throw(_("Failed to verify payment after retries: {0}").format(str(last_exception)))
     
     def initiate_payout(self, beneficiary_name, beneficiary_email, amount, currency, bank_account, bank_code, bank_name=None, narration=None, beneficiary_type=None, beneficiary_mobile=None, meta_data=None):
-        """Initiate a single payout via SeerBit with all required fields"""
+        """
+        DEPRECATED: Legacy payout method - use initiate_payout_enhanced instead
+        
+        This method is kept for backward compatibility but does not follow
+        the proper SeerBit payout API flow which requires:
+        1. Email/password authentication for bearer token
+        2. OTP generation with pocket ID
+        3. Signature generation using OTP
+        4. Payout initiation with signature
+        
+        For new implementations, use the enhanced payout flow.
+        """
+        frappe.log_error("Using deprecated payout method. Please upgrade to enhanced payout flow.", "SeerBit Deprecated Method")
+        
+        # Check if enhanced payouts are enabled
+        if self.enable_payouts:
+            from payments.payment_gateways.doctype.seerbit_settings.seerbit_payout_enhanced import SeerBitPayoutEnhanced
+            enhanced_handler = SeerBitPayoutEnhanced(self)
+            return enhanced_handler.initiate_payout_enhanced(
+                beneficiary_name=beneficiary_name,
+                beneficiary_email=beneficiary_email,
+                amount=amount,
+                currency=currency,
+                bank_account=bank_account,
+                bank_code=bank_code,
+                bank_name=bank_name,
+                narration=narration,
+                beneficiary_type=beneficiary_type,
+                beneficiary_mobile=beneficiary_mobile,
+                meta_data=meta_data
+            )
+        
+        # Legacy implementation (not following proper SeerBit flow)
+        frappe.msgprint(_("Warning: Using legacy payout method. Enable enhanced payouts in SeerBit Settings for proper API compliance."), alert=True)
+        
         encrypted_key = self.get_encrypted_key()
         base_url = "https://seerbitapi.com" if not self.sandbox_mode else "https://sandbox.seerbitapi.com"
         url = f"{base_url}/api/v2/payouts"
@@ -222,12 +256,14 @@ class SeerbitSettings(Document):
                             "narration": narration or "",
                             "gateway_response": frappe.as_json(result),
                             "meta_data": frappe.as_json(meta_data or {}),
+                            "payout_method": "Legacy"
                         })
                         payout_doc.insert(ignore_permissions=True)
                         return {
                             "status": "success",
                             "payout_reference": payout_reference,
-                            "docname": payout_doc.name
+                            "docname": payout_doc.name,
+                            "method": "legacy"
                         }
                     else:
                         frappe.log_error(str(result), "SeerBit Payout Initiation Failure")
@@ -242,6 +278,17 @@ class SeerbitSettings(Document):
                     frappe.throw(_("Network/API error while initiating payout: {0}").format(str(e)))
         if last_exception:
             frappe.throw(_("Failed to initiate payout after retries: {0}").format(str(last_exception)))
+
+    def initiate_payout_enhanced(self, **kwargs):
+        """
+        Enhanced payout method following proper SeerBit API flow
+        """
+        if not self.enable_payouts:
+            frappe.throw(_("Enhanced SeerBit payouts are not enabled. Please enable in SeerBit Settings."))
+        
+        from payments.payment_gateways.doctype.seerbit_settings.seerbit_payout_enhanced import SeerBitPayoutEnhanced
+        enhanced_handler = SeerBitPayoutEnhanced(self)
+        return enhanced_handler.initiate_payout_enhanced(**kwargs)
 
     def initiate_bulk_payouts(self, payout_list):
         """Initiate multiple payouts. payout_list: list of dicts with keys matching initiate_payout args."""

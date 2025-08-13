@@ -15,7 +15,14 @@
   "webhook_secret",
   "column_break_6",
   "supported_currencies",
-  "supported_countries"
+  "supported_countries",
+  "payout_section",
+  "enable_payouts",
+  "payout_email",
+  "payout_password",
+  "payout_column_break",
+  "auto_verify_payouts",
+  "payout_verification_interval"
  ],
  "fields": [
   {
@@ -69,6 +76,49 @@
    "fieldname": "supported_countries",
    "fieldtype": "Small Text",
    "label": "Supported Countries"
+  },
+  {
+   "fieldname": "payout_section",
+   "fieldtype": "Section Break",
+   "label": "Payout Settings"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_payouts",
+   "fieldtype": "Check",
+   "label": "Enable SeerBit Payouts"
+  },
+  {
+   "fieldname": "payout_email",
+   "fieldtype": "Data",
+   "label": "Payout Authentication Email",
+   "mandatory_depends_on": "enable_payouts",
+   "description": "SeerBit dashboard email for payout authentication"
+  },
+  {
+   "fieldname": "payout_password",
+   "fieldtype": "Password",
+   "label": "Payout Authentication Password",
+   "mandatory_depends_on": "enable_payouts",
+   "description": "SeerBit dashboard password for payout authentication"
+  },
+  {
+   "fieldname": "payout_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_verify_payouts",
+   "fieldtype": "Check",
+   "label": "Auto Verify Payout Status",
+   "depends_on": "enable_payouts"
+  },
+  {
+   "default": "60",
+   "fieldname": "payout_verification_interval",
+   "fieldtype": "Int",
+   "label": "Payout Verification Interval (minutes)",
+   "depends_on": "auto_verify_payouts"
   }
  ],
  "index_web_pages_for_search": 1,

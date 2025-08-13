@@ -64,7 +64,12 @@ app_license = "MIT"
 # ------------
 
 before_install = "payments.utils.before_install"
-after_install = ["payments.utils.make_custom_fields","payments.utils.create_custom_fields" ]
+after_install = [
+    "payments.utils.make_custom_fields",
+    "payments.utils.create_custom_fields",
+    "payments.utils.create_payment_entry_seerbit_fields",
+    "payments.utils.create_sales_invoice_seerbit_fields"
+]
 
 # Installation hooks
 # ------------------

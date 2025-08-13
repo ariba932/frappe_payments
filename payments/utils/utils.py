@@ -436,3 +436,82 @@ def cleanup_seerbit_bank_records():
 	
 	except Exception as e:
 		click.secho(f"  - Error cleaning up SeerBit bank records: {str(e)}", fg="red")
+
+def create_sales_invoice_seerbit_fields():
+    """Create SeerBit custom fields for Sales Invoice"""
+    custom_fields = {
+        "Sales Invoice": [
+            {
+                "fieldname": "seerbit_payment_section",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payment Details"
+            },
+            {
+                "fieldname": "seerbit_payment_link",
+                "fieldtype": "Data",
+                "label": "SeerBit Payment Link",
+                "read_only": 1
+            },
+            {
+                "fieldname": "seerbit_payment_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payment Reference",
+                "read_only": 1
+            },
+            {
+                "fieldname": "seerbit_payment_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payment Status",
+                "options": "Not Initiated\nPending\nPaid\nFailed\nPartially Paid",
+                "default": "Not Initiated",
+                "read_only": 1
+            }
+        ]
+    }
+    
+    create_custom_fields(custom_fields)
+
+def create_payment_entry_seerbit_fields():
+    """Create SeerBit custom fields for Payment Entry"""
+    custom_fields = {
+        "Payment Entry": [
+            {
+                "fieldname": "seerbit_section",
+                "fieldtype": "Section Break",
+                "label": "SeerBit Payout Details",
+                "depends_on": "eval:doc.payment_type=='Pay'"
+            },
+            {
+                "fieldname": "seerbit_payout_reference",
+                "fieldtype": "Data",
+                "label": "SeerBit Payout Reference",
+                "read_only": 1
+            },
+            {
+                "fieldname": "seerbit_payout_status",
+                "fieldtype": "Select",
+                "label": "SeerBit Payout Status",
+                "options": "Not Initiated\nPending\nProcessing\nPaid\nFailed\nCancelled",
+                "default": "Not Initiated",
+                "read_only": 1
+            },
+            {
+                "fieldname": "seerbit_column_break",
+                "fieldtype": "Column Break"
+            },
+            {
+                "fieldname": "seerbit_payout_date",
+                "fieldtype": "Datetime",
+                "label": "SeerBit Payout Date",
+                "read_only": 1
+            },
+            {
+                "fieldname": "seerbit_payout_fee",
+                "fieldtype": "Currency",
+                "label": "SeerBit Payout Fee",
+                "read_only": 1
+            }
+        ]
+    }
+    
+    create_custom_fields(custom_fields)
