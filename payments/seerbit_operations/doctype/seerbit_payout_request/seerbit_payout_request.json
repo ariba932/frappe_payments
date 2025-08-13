@@ -1,0 +1,402 @@
+{
+    "actions": [],
+    "allow_rename": 0,
+    "autoname": "naming_series:",
+    "creation": "2025-08-13 10:45:00.000000",
+    "description": "Manage SeerBit payout requests for suppliers and employees",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_series",
+        "request_details_section",
+        "payout_type",
+        "reference_doctype",
+        "reference_name",
+        "column_break_5",
+        "status",
+        "approval_status",
+        "beneficiary_section",
+        "beneficiary_type",
+        "beneficiary_name",
+        "beneficiary_email",
+        "column_break_11",
+        "beneficiary_phone",
+        "bank_details_section",
+        "bank_code",
+        "account_number",
+        "account_name",
+        "column_break_16",
+        "bank_name",
+        "account_verified",
+        "amount_section",
+        "amount",
+        "currency",
+        "column_break_21",
+        "fees",
+        "net_amount",
+        "seerbit_details_section",
+        "pocket_id",
+        "seerbit_reference",
+        "column_break_26",
+        "otp_code",
+        "signature_hash",
+        "timestamps_section",
+        "request_date",
+        "approved_date",
+        "column_break_31",
+        "processed_date",
+        "last_updated",
+        "approval_section",
+        "approved_by",
+        "approval_comments",
+        "column_break_36",
+        "requires_approval",
+        "auto_approve",
+        "configuration_section",
+        "priority",
+        "description",
+        "column_break_41",
+        "notes",
+        "attachments"
+    ],
+    "fields": [
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Series",
+            "options": "SBPO-.YYYY.-.#####",
+            "reqd": 1
+        },
+        {
+            "fieldname": "request_details_section",
+            "fieldtype": "Section Break",
+            "label": "Request Details"
+        },
+        {
+            "fieldname": "payout_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Payout Type",
+            "options": "Supplier Payment\nEmployee Salary\nEmployee Expense\nBonus Payment\nRefund\nOther",
+            "reqd": 1
+        },
+        {
+            "fieldname": "reference_doctype",
+            "fieldtype": "Select",
+            "label": "Reference DocType",
+            "options": "Purchase Invoice\nExpense Claim\nSalary Slip\nPayment Entry\nCustom"
+        },
+        {
+            "fieldname": "reference_name",
+            "fieldtype": "Dynamic Link",
+            "label": "Reference Document",
+            "options": "reference_doctype"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Draft\nPending Approval\nApproved\nProcessing\nCompleted\nFailed\nCancelled",
+            "reqd": 1
+        },
+        {
+            "fieldname": "approval_status",
+            "fieldtype": "Select",
+            "label": "Approval Status",
+            "options": "Not Required\nPending\nApproved\nRejected"
+        },
+        {
+            "fieldname": "beneficiary_section",
+            "fieldtype": "Section Break",
+            "label": "Beneficiary Details"
+        },
+        {
+            "fieldname": "beneficiary_type",
+            "fieldtype": "Select",
+            "label": "Beneficiary Type",
+            "options": "Supplier\nEmployee\nCustomer\nOther",
+            "reqd": 1
+        },
+        {
+            "fieldname": "beneficiary_name",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Beneficiary Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "beneficiary_email",
+            "fieldtype": "Data",
+            "label": "Beneficiary Email"
+        },
+        {
+            "fieldname": "column_break_11",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "beneficiary_phone",
+            "fieldtype": "Data",
+            "label": "Beneficiary Phone"
+        },
+        {
+            "fieldname": "bank_details_section",
+            "fieldtype": "Section Break",
+            "label": "Bank Details"
+        },
+        {
+            "fieldname": "bank_code",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Bank Code",
+            "reqd": 1
+        },
+        {
+            "fieldname": "account_number",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "Account Number",
+            "reqd": 1
+        },
+        {
+            "fieldname": "account_name",
+            "fieldtype": "Data",
+            "label": "Account Name",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_16",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "bank_name",
+            "fieldtype": "Data",
+            "label": "Bank Name",
+            "read_only": 1
+        },
+        {
+            "fieldname": "account_verified",
+            "fieldtype": "Check",
+            "label": "Account Verified"
+        },
+        {
+            "fieldname": "amount_section",
+            "fieldtype": "Section Break",
+            "label": "Amount Details"
+        },
+        {
+            "fieldname": "amount",
+            "fieldtype": "Currency",
+            "in_list_view": 1,
+            "label": "Amount",
+            "precision": 2,
+            "reqd": 1
+        },
+        {
+            "fieldname": "currency",
+            "fieldtype": "Link",
+            "label": "Currency",
+            "options": "Currency",
+            "reqd": 1
+        },
+        {
+            "fieldname": "column_break_21",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "fees",
+            "fieldtype": "Currency",
+            "label": "Processing Fees",
+            "precision": 2
+        },
+        {
+            "fieldname": "net_amount",
+            "fieldtype": "Currency",
+            "label": "Net Amount",
+            "precision": 2,
+            "read_only": 1
+        },
+        {
+            "fieldname": "seerbit_details_section",
+            "fieldtype": "Section Break",
+            "label": "SeerBit Details"
+        },
+        {
+            "fieldname": "pocket_id",
+            "fieldtype": "Link",
+            "label": "Source Pocket",
+            "options": "SeerBit Pocket"
+        },
+        {
+            "fieldname": "seerbit_reference",
+            "fieldtype": "Data",
+            "label": "SeerBit Reference",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_26",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "otp_code",
+            "fieldtype": "Data",
+            "label": "OTP Code",
+            "read_only": 1
+        },
+        {
+            "fieldname": "signature_hash",
+            "fieldtype": "Data",
+            "label": "Signature Hash",
+            "read_only": 1
+        },
+        {
+            "fieldname": "timestamps_section",
+            "fieldtype": "Section Break",
+            "label": "Timestamps"
+        },
+        {
+            "fieldname": "request_date",
+            "fieldtype": "Datetime",
+            "label": "Request Date",
+            "reqd": 1
+        },
+        {
+            "fieldname": "approved_date",
+            "fieldtype": "Datetime",
+            "label": "Approved Date",
+            "read_only": 1
+        },
+        {
+            "fieldname": "column_break_31",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "processed_date",
+            "fieldtype": "Datetime",
+            "label": "Processed Date",
+            "read_only": 1
+        },
+        {
+            "fieldname": "last_updated",
+            "fieldtype": "Datetime",
+            "label": "Last Updated",
+            "read_only": 1
+        },
+        {
+            "fieldname": "approval_section",
+            "fieldtype": "Section Break",
+            "label": "Approval"
+        },
+        {
+            "fieldname": "approved_by",
+            "fieldtype": "Link",
+            "label": "Approved By",
+            "options": "User",
+            "read_only": 1
+        },
+        {
+            "fieldname": "approval_comments",
+            "fieldtype": "Text",
+            "label": "Approval Comments"
+        },
+        {
+            "fieldname": "column_break_36",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "requires_approval",
+            "fieldtype": "Check",
+            "label": "Requires Approval"
+        },
+        {
+            "fieldname": "auto_approve",
+            "fieldtype": "Check",
+            "label": "Auto Approve"
+        },
+        {
+            "fieldname": "configuration_section",
+            "fieldtype": "Section Break",
+            "label": "Configuration"
+        },
+        {
+            "fieldname": "priority",
+            "fieldtype": "Select",
+            "label": "Priority",
+            "options": "Low\nMedium\nHigh\nUrgent"
+        },
+        {
+            "fieldname": "description",
+            "fieldtype": "Text",
+            "label": "Description"
+        },
+        {
+            "fieldname": "column_break_41",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "notes",
+            "fieldtype": "Long Text",
+            "label": "Notes"
+        },
+        {
+            "fieldname": "attachments",
+            "fieldtype": "Attach",
+            "label": "Attachments"
+        }
+    ],
+    "icon": "fa fa-money",
+    "idx": 1,
+    "in_create": 1,
+    "is_submittable": 1,
+    "links": [],
+    "modified": "2025-08-13 10:45:00.000000",
+    "module": "SeerBit Operations",
+    "name": "SeerBit Payout Request",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "delete": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Accounts Manager",
+            "share": 1,
+            "submit": 1,
+            "write": 1
+        },
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Accounts Officer",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "read": 1,
+            "report": 1,
+            "role": "Employee"
+        }
+    ],
+    "search_fields": "beneficiary_name,bank_code,account_number,status",
+    "show_name_in_global_search": 1,
+    "sort_field": "request_date",
+    "sort_order": "DESC",
+    "states": [],
+    "title_field": "beneficiary_name",
+    "track_changes": 1,
+    "track_seen": 1,
+    "track_views": 1
+}

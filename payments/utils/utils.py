@@ -11,6 +11,32 @@ def validate_integration_request(docname: str | None):
 		frappe.throw(_("Expired Token"))
 
 
+def create_request_log(data, integration_type="SeerBit", service_name=None, name=None, error=None):
+	"""Create request log for payment gateway operations"""
+	try:
+		log_data = {
+			"doctype": "Integration Request",
+			"integration_type": integration_type,
+			"integration_request_service": service_name or integration_type,
+			"data": frappe.as_json(data) if isinstance(data, dict) else str(data),
+			"output": frappe.as_json(error) if error else None,
+			"error": error is not None,
+			"status": "Failed" if error else "Completed"
+		}
+		
+		if name:
+			log_data["name"] = name
+			
+		log = frappe.get_doc(log_data)
+		log.insert(ignore_permissions=True)
+		frappe.db.commit()
+		
+		return log.name
+	except Exception as e:
+		frappe.log_error(f"Failed to create request log: {str(e)}", "Request Log Error")
+		return None
+
+
 def get_payment_gateway_controller(payment_gateway):
 	"""Return payment gateway controller"""
 	gateway = frappe.get_doc("Payment Gateway", payment_gateway)

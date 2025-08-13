@@ -1,0 +1,302 @@
+{
+    "actions": [],
+    "allow_rename": 0,
+    "autoname": "naming_series:",
+    "creation": "2025-08-13 10:15:00.000000",
+    "description": "Log all SeerBit transactions and activities for audit trail",
+    "doctype": "DocType",
+    "editable_grid": 1,
+    "engine": "InnoDB",
+    "field_order": [
+        "naming_series",
+        "transaction_details_section",
+        "transaction_type",
+        "reference_doctype",
+        "reference_name",
+        "column_break_5",
+        "seerbit_reference",
+        "pocket_id",
+        "payment_method",
+        "amount_section",
+        "amount",
+        "currency",
+        "column_break_11",
+        "fees",
+        "net_amount",
+        "status_section",
+        "status",
+        "action",
+        "column_break_16",
+        "timestamp",
+        "processed_at",
+        "response_section",
+        "response_code",
+        "response_message",
+        "column_break_20",
+        "api_endpoint",
+        "request_id",
+        "details_section",
+        "details",
+        "error_details",
+        "column_break_24",
+        "retry_count",
+        "last_retry_at",
+        "additional_info_section",
+        "customer_email",
+        "customer_phone",
+        "column_break_28",
+        "ip_address",
+        "user_agent"
+    ],
+    "fields": [
+        {
+            "fieldname": "naming_series",
+            "fieldtype": "Select",
+            "label": "Series",
+            "options": "SBTXN-.YYYY.-.#####",
+            "reqd": 1
+        },
+        {
+            "fieldname": "transaction_details_section",
+            "fieldtype": "Section Break",
+            "label": "Transaction Details"
+        },
+        {
+            "fieldname": "transaction_type",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Transaction Type",
+            "options": "Payment Collection\nPayout\nPocket Transfer\nPocket Operation\nBalance Inquiry\nWebhook\nOther",
+            "reqd": 1
+        },
+        {
+            "fieldname": "reference_doctype",
+            "fieldtype": "Link",
+            "label": "Reference DocType",
+            "options": "DocType"
+        },
+        {
+            "fieldname": "reference_name",
+            "fieldtype": "Dynamic Link",
+            "label": "Reference Document",
+            "options": "reference_doctype"
+        },
+        {
+            "fieldname": "column_break_5",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "seerbit_reference",
+            "fieldtype": "Data",
+            "in_list_view": 1,
+            "label": "SeerBit Reference"
+        },
+        {
+            "fieldname": "pocket_id",
+            "fieldtype": "Data",
+            "label": "Pocket ID"
+        },
+        {
+            "fieldname": "payment_method",
+            "fieldtype": "Data",
+            "label": "Payment Method"
+        },
+        {
+            "fieldname": "amount_section",
+            "fieldtype": "Section Break",
+            "label": "Amount Details"
+        },
+        {
+            "fieldname": "amount",
+            "fieldtype": "Currency",
+            "in_list_view": 1,
+            "label": "Amount",
+            "precision": 2
+        },
+        {
+            "fieldname": "currency",
+            "fieldtype": "Link",
+            "label": "Currency",
+            "options": "Currency"
+        },
+        {
+            "fieldname": "column_break_11",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "fees",
+            "fieldtype": "Currency",
+            "label": "Fees",
+            "precision": 2
+        },
+        {
+            "fieldname": "net_amount",
+            "fieldtype": "Currency",
+            "label": "Net Amount",
+            "precision": 2
+        },
+        {
+            "fieldname": "status_section",
+            "fieldtype": "Section Break",
+            "label": "Status"
+        },
+        {
+            "fieldname": "status",
+            "fieldtype": "Select",
+            "in_list_view": 1,
+            "label": "Status",
+            "options": "Pending\nSuccess\nFailed\nError\nCancelled\nRefunded",
+            "reqd": 1
+        },
+        {
+            "fieldname": "action",
+            "fieldtype": "Data",
+            "label": "Action"
+        },
+        {
+            "fieldname": "column_break_16",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "timestamp",
+            "fieldtype": "Datetime",
+            "in_list_view": 1,
+            "label": "Timestamp",
+            "reqd": 1
+        },
+        {
+            "fieldname": "processed_at",
+            "fieldtype": "Datetime",
+            "label": "Processed At"
+        },
+        {
+            "fieldname": "response_section",
+            "fieldtype": "Section Break",
+            "label": "API Response"
+        },
+        {
+            "fieldname": "response_code",
+            "fieldtype": "Data",
+            "label": "Response Code"
+        },
+        {
+            "fieldname": "response_message",
+            "fieldtype": "Text",
+            "label": "Response Message"
+        },
+        {
+            "fieldname": "column_break_20",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "api_endpoint",
+            "fieldtype": "Data",
+            "label": "API Endpoint"
+        },
+        {
+            "fieldname": "request_id",
+            "fieldtype": "Data",
+            "label": "Request ID"
+        },
+        {
+            "fieldname": "details_section",
+            "fieldtype": "Section Break",
+            "label": "Details"
+        },
+        {
+            "fieldname": "details",
+            "fieldtype": "Long Text",
+            "label": "Details"
+        },
+        {
+            "fieldname": "error_details",
+            "fieldtype": "Long Text",
+            "label": "Error Details"
+        },
+        {
+            "fieldname": "column_break_24",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "retry_count",
+            "fieldtype": "Int",
+            "label": "Retry Count"
+        },
+        {
+            "fieldname": "last_retry_at",
+            "fieldtype": "Datetime",
+            "label": "Last Retry At"
+        },
+        {
+            "fieldname": "additional_info_section",
+            "fieldtype": "Section Break",
+            "label": "Additional Information"
+        },
+        {
+            "fieldname": "customer_email",
+            "fieldtype": "Data",
+            "label": "Customer Email"
+        },
+        {
+            "fieldname": "customer_phone",
+            "fieldtype": "Data",
+            "label": "Customer Phone"
+        },
+        {
+            "fieldname": "column_break_28",
+            "fieldtype": "Column Break"
+        },
+        {
+            "fieldname": "ip_address",
+            "fieldtype": "Data",
+            "label": "IP Address"
+        },
+        {
+            "fieldname": "user_agent",
+            "fieldtype": "Text",
+            "label": "User Agent"
+        }
+    ],
+    "icon": "fa fa-list-alt",
+    "idx": 1,
+    "in_create": 0,
+    "links": [],
+    "modified": "2025-08-13 10:15:00.000000",
+    "module": "SeerBit Operations",
+    "name": "SeerBit Transaction Log",
+    "naming_rule": "By \"Naming Series\" field",
+    "owner": "Administrator",
+    "permissions": [
+        {
+            "create": 1,
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Accounts Manager",
+            "share": 1,
+            "write": 1
+        },
+        {
+            "email": 1,
+            "export": 1,
+            "print": 1,
+            "read": 1,
+            "report": 1,
+            "role": "Accounts Officer",
+            "share": 1
+        },
+        {
+            "read": 1,
+            "report": 1,
+            "role": "Auditor"
+        }
+    ],
+    "search_fields": "seerbit_reference,transaction_type,status",
+    "show_name_in_global_search": 1,
+    "sort_field": "timestamp",
+    "sort_order": "DESC",
+    "states": [],
+    "track_changes": 1
+}

@@ -29,7 +29,11 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+    "Sales Invoice": "public/js/sales_invoice.js",
+    "Purchase Invoice": "public/js/purchase_invoice.js",
+    "Department": "public/js/department.js"
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -66,9 +70,10 @@ app_license = "MIT"
 before_install = "payments.utils.before_install"
 after_install = [
     "payments.utils.make_custom_fields",
-    "payments.utils.create_custom_fields",
+    "payments.utils.create_custom_fields", 
     "payments.utils.create_payment_entry_seerbit_fields",
-    "payments.utils.create_sales_invoice_seerbit_fields"
+    "payments.utils.create_sales_invoice_seerbit_fields",
+    "payments.seerbit_operations.custom_fields.create_fields.create_seerbit_custom_fields"
 ]
 
 # Installation hooks
@@ -123,10 +128,20 @@ override_doctype_class = {"Web Form": "payments.overrides.payment_webform.Paymen
 # 		"on_trash": "method"
 # 	}
 # }
-# Add SeerBit specific hooks
 doc_events = {
-    # ... existing doc_events ...
-    
+    "Sales Invoice": {
+        "on_submit": "payments.seerbit_operations.utils.integration_utils.auto_create_payment_requests",
+        "on_payment_complete": "payments.seerbit_integration.selling.invoice_payments.on_payment_complete"
+    },
+    "Purchase Invoice": {
+        "on_submit": "payments.seerbit_operations.utils.integration_utils.auto_create_payout_requests"
+    },
+    "Department": {
+        "after_insert": "payments.seerbit_operations.utils.integration_utils.auto_create_department_pocket"
+    },
+    "Supplier": {
+        "validate": "payments.seerbit_operations.utils.integration_utils.validate_supplier_bank_details"
+    },
     "SeerBit Order": {
         "on_payment_captured": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_captured",
         "on_payment_failed": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_failed"
@@ -142,9 +157,15 @@ scheduler_events = {
 		"payments.payment_gateways.doctype.razorpay_settings.razorpay_settings.capture_payment",
 	],
     "hourly": [
-        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payments",
-        "payments.payment_gateways.doctype.seerbit_settings.tasks.verify_pending_payouts"
+        "payments.seerbit_integration.utils.dashboard.auto_verify_pending_payments",
+        "payments.seerbit_integration.utils.dashboard.auto_verify_pending_payouts",
+        "payments.seerbit_operations.utils.integration_utils.auto_verify_pending_payments",
+        "payments.seerbit_operations.utils.integration_utils.sync_all_pocket_balances"
     ],
+    "daily": [
+        "payments.seerbit_integration.utils.bank_management.sync_bank_codes_from_seerbit",
+        "payments.seerbit_operations.utils.integration_utils.auto_create_payment_requests"
+    ]
 }
 
 # Testing
@@ -159,12 +180,13 @@ override_whitelisted_methods = {
 	"frappe.website.doctype.web_form.web_form.accept": "payments.overrides.payment_webform.accept"
 }
 
-# Webhook endpoints for Seerbit notifications
+# Webhook endpoints for SeerBit notifications (Updated for modular structure)
 website_route_rules = [
     {"from_route": "/seerbit_payment_success", "to_route": "payment_success"},
     {"from_route": "/seerbit_payment_failed", "to_route": "payment_failed"},
     {"from_route": "/seerbit_payment_error", "to_route": "payment_error"},
-    {"from_route": "/api/method/seerbit_payout_webhook", "to_route": "payments.payment_gateways.doctype.seerbit_payout.seerbit_payout.seerbit_payout_webhook"},
+    {"from_route": "/api/method/seerbit_webhook", "to_route": "payments.seerbit_integration.core.webhooks.webhook_handler"},
+    {"from_route": "/api/method/seerbit_payment_callback", "to_route": "payments.seerbit_integration.core.webhooks.payment_callback"},
 ]
 
 # Fixtures for installation
