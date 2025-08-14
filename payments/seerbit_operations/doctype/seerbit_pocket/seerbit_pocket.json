@@ -1,244 +1,250 @@
 {
-    "actions": [],
-    "allow_rename": 1,
-    "autoname": "field:pocket_name",
-    "creation": "2025-08-13 10:00:00.000000",
-    "description": "Manage SeerBit Pocket wallets for fund management and transfers",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-        "pocket_details_section",
-        "pocket_name",
-        "pocket_id",
-        "column_break_3",
-        "pocket_type",
-        "status",
-        "balance_section",
-        "current_balance",
-        "currency",
-        "column_break_8",
-        "last_updated",
-        "last_sync_time",
-        "association_section",
-        "linked_department",
-        "linked_cost_center",
-        "column_break_13",
-        "linked_company",
-        "manager_employee",
-        "configuration_section",
-        "is_active",
-        "can_receive_transfers",
-        "column_break_17",
-        "can_send_transfers",
-        "auto_sync_enabled",
-        "description_section",
-        "description",
-        "notes"
-    ],
-    "fields": [
-        {
-            "fieldname": "pocket_details_section",
-            "fieldtype": "Section Break",
-            "label": "Pocket Details"
-        },
-        {
-            "fieldname": "pocket_name",
-            "fieldtype": "Data",
-            "in_list_view": 1,
-            "label": "Pocket Name",
-            "reqd": 1,
-            "unique": 1
-        },
-        {
-            "fieldname": "pocket_id",
-            "fieldtype": "Data",
-            "in_list_view": 1,
-            "label": "SeerBit Pocket ID",
-            "read_only": 1
-        },
-        {
-            "fieldname": "column_break_3",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "pocket_type",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "label": "Pocket Type",
-            "options": "Main Pocket\nDepartment Pocket\nProject Pocket\nEmployee Pocket\nVendor Pocket",
-            "reqd": 1
-        },
-        {
-            "fieldname": "status",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "label": "Status",
-            "options": "Active\nInactive\nSuspended\nClosed",
-            "reqd": 1
-        },
-        {
-            "fieldname": "balance_section",
-            "fieldtype": "Section Break",
-            "label": "Balance Information"
-        },
-        {
-            "fieldname": "current_balance",
-            "fieldtype": "Currency",
-            "in_list_view": 1,
-            "label": "Current Balance",
-            "precision": 2,
-            "read_only": 1
-        },
-        {
-            "fieldname": "currency",
-            "fieldtype": "Link",
-            "label": "Currency",
-            "options": "Currency",
-            "reqd": 1
-        },
-        {
-            "fieldname": "column_break_8",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "last_updated",
-            "fieldtype": "Datetime",
-            "label": "Last Updated",
-            "read_only": 1
-        },
-        {
-            "fieldname": "last_sync_time",
-            "fieldtype": "Datetime",
-            "label": "Last Sync Time",
-            "read_only": 1
-        },
-        {
-            "fieldname": "association_section",
-            "fieldtype": "Section Break",
-            "label": "ERPNext Association"
-        },
-        {
-            "fieldname": "linked_department",
-            "fieldtype": "Link",
-            "label": "Linked Department",
-            "options": "Department"
-        },
-        {
-            "fieldname": "linked_cost_center",
-            "fieldtype": "Link",
-            "label": "Linked Cost Center",
-            "options": "Cost Center"
-        },
-        {
-            "fieldname": "column_break_13",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "linked_company",
-            "fieldtype": "Link",
-            "label": "Company",
-            "options": "Company",
-            "reqd": 1
-        },
-        {
-            "fieldname": "manager_employee",
-            "fieldtype": "Link",
-            "label": "Manager Employee",
-            "options": "Employee"
-        },
-        {
-            "fieldname": "configuration_section",
-            "fieldtype": "Section Break",
-            "label": "Configuration"
-        },
-        {
-            "fieldname": "is_active",
-            "fieldtype": "Check",
-            "label": "Is Active"
-        },
-        {
-            "fieldname": "can_receive_transfers",
-            "fieldtype": "Check",
-            "label": "Can Receive Transfers"
-        },
-        {
-            "fieldname": "column_break_17",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "can_send_transfers",
-            "fieldtype": "Check",
-            "label": "Can Send Transfers"
-        },
-        {
-            "fieldname": "auto_sync_enabled",
-            "fieldtype": "Check",
-            "label": "Auto Sync Enabled"
-        },
-        {
-            "fieldname": "description_section",
-            "fieldtype": "Section Break",
-            "label": "Description"
-        },
-        {
-            "fieldname": "description",
-            "fieldtype": "Text",
-            "label": "Description"
-        },
-        {
-            "fieldname": "notes",
-            "fieldtype": "Long Text",
-            "label": "Notes"
-        }
-    ],
-    "icon": "fa fa-wallet",
-    "idx": 1,
-    "in_create": 1,
-    "links": [],
-    "modified": "2025-08-13 10:00:00.000000",
-    "module": "SeerBit Operations",
-    "name": "SeerBit Pocket",
-    "naming_rule": "By fieldname",
-    "owner": "Administrator",
-    "permissions": [
-        {
-            "create": 1,
-            "delete": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "Accounts Manager",
-            "share": 1,
-            "write": 1
-        },
-        {
-            "create": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "Accounts Officer",
-            "share": 1,
-            "write": 1
-        },
-        {
-            "read": 1,
-            "report": 1,
-            "role": "Employee"
-        }
-    ],
-    "quick_entry": 1,
-    "search_fields": "pocket_name,pocket_type,status",
-    "show_name_in_global_search": 1,
-    "sort_field": "modified",
-    "sort_order": "DESC",
-    "states": [],
-    "title_field": "pocket_name",
-    "track_changes": 1,
-    "track_seen": 1,
-    "track_views": 1
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:pocket_name",
+ "creation": "2025-08-13 10:00:00",
+ "description": "Manage SeerBit Pocket wallets for fund management and transfers",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "pocket_details_section",
+  "pocket_name",
+  "pocket_id",
+  "column_break_3",
+  "pocket_type",
+  "status",
+  "balance_section",
+  "current_balance",
+  "currency",
+  "column_break_8",
+  "last_updated",
+  "last_sync_time",
+  "association_section",
+  "linked_department",
+  "linked_cost_center",
+  "column_break_13",
+  "linked_company",
+  "manager_employee",
+  "configuration_section",
+  "is_active",
+  "can_receive_transfers",
+  "column_break_17",
+  "can_send_transfers",
+  "auto_sync_enabled",
+  "description_section",
+  "description",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "pocket_details_section",
+   "fieldtype": "Section Break",
+   "label": "Pocket Details"
+  },
+  {
+   "fieldname": "pocket_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Pocket Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "pocket_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "SeerBit Pocket ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "pocket_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Pocket Type",
+   "options": "Main Pocket\nDepartment Pocket\nProject Pocket\nEmployee Pocket\nVendor Pocket",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Active\nInactive\nSuspended\nClosed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "balance_section",
+   "fieldtype": "Section Break",
+   "label": "Balance Information"
+  },
+  {
+   "fieldname": "current_balance",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Current Balance",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_updated",
+   "fieldtype": "Datetime",
+   "label": "Last Updated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_sync_time",
+   "fieldtype": "Datetime",
+   "label": "Last Sync Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "association_section",
+   "fieldtype": "Section Break",
+   "label": "ERPNext Association"
+  },
+  {
+   "fieldname": "linked_department",
+   "fieldtype": "Link",
+   "label": "Linked Department",
+   "options": "Department"
+  },
+  {
+   "fieldname": "linked_cost_center",
+   "fieldtype": "Link",
+   "label": "Linked Cost Center",
+   "options": "Cost Center"
+  },
+  {
+   "fieldname": "column_break_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "linked_company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "manager_employee",
+   "fieldtype": "Link",
+   "label": "Manager Employee",
+   "options": "Employee"
+  },
+  {
+   "fieldname": "configuration_section",
+   "fieldtype": "Section Break",
+   "label": "Configuration"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_receive_transfers",
+   "fieldtype": "Check",
+   "label": "Can Receive Transfers"
+  },
+  {
+   "fieldname": "column_break_17",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_send_transfers",
+   "fieldtype": "Check",
+   "label": "Can Send Transfers"
+  },
+  {
+   "default": "0",
+   "fieldname": "auto_sync_enabled",
+   "fieldtype": "Check",
+   "label": "Auto Sync Enabled"
+  },
+  {
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Description"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Long Text",
+   "label": "Notes"
+  }
+ ],
+ "icon": "fa fa-wallet",
+ "idx": 1,
+ "in_create": 1,
+ "links": [],
+ "modified": "2025-08-14 12:13:08.276588",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Pocket",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Officer",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Employee"
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "pocket_name,pocket_type,status",
+ "show_name_in_global_search": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "pocket_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

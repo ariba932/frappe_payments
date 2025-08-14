@@ -1,0 +1,36 @@
+{
+ "add_total_row": 0,
+ "add_translate_data": 1,
+ "columns": [],
+ "creation": "2025-08-14 14:56:45.782928",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "json": "{\"filters\":[],\"fields\":[[\"payout_type\",\"SeerBit Payout Request\"],[\"_aggregate_column\",\"SeerBit Payout Request\"]],\"order_by\":\"`tabSeerBit Payout Request`.`request_date` desc\",\"add_totals_row\":0,\"page_length\":20,\"column_widths\":{},\"group_by\":{\"group_by\":\"`tabSeerBit Payout Request`.`payout_type`\",\"aggregate_function\":\"count\"}}",
+ "letter_head": "6Nigeria Company Letter Head",
+ "letterhead": null,
+ "modified": "2025-08-14 15:05:26.506895",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Payout Analytics",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "SeerBit Payout Request",
+ "report_name": "SeerBit Payout Analytics",
+ "report_type": "Report Builder",
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts Officer"
+  },
+  {
+   "role": "Employee"
+  }
+ ],
+ "timeout": 0
+}

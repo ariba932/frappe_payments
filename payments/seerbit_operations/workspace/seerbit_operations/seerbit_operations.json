@@ -1,0 +1,225 @@
+{
+ "charts": [
+  {
+   "chart_name": "SeerBit Transactions",
+   "label": "Transactions OverView"
+  },
+  {
+   "chart_name": "SeerBit Payment Collections",
+   "label": "Payment Collection Trend"
+  },
+  {
+   "chart_name": "SeerBit Payout Summary",
+   "label": "Payout Status Distribution"
+  }
+ ],
+ "content": "[{\"id\":\"wgdztc1AT6\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">SeerBit Payment Gateway</span>\",\"col\":12}},{\"id\":\"9d5XetVOUy\",\"type\":\"paragraph\",\"data\":{\"text\":\"Comprehensive payment gateway management for collections, payouts, and pocket operations\",\"col\":12}},{\"id\":\"J3UE7K5rTp\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">\ud83d\udcca<b>Dashboard Overview</b></span>\",\"col\":12}},{\"id\":\"x18FcKeLtT\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Transactions OverView\",\"col\":12}},{\"id\":\"KGvxDpj6mm\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Payment Collection Trend\",\"col\":6}},{\"id\":\"61QLoyrOPw\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Payout Status Distribution\",\"col\":6}},{\"id\":\"CxP-TM2BZX\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">\ud83d\udcb3<b>Payment Collections</b></span>\",\"col\":12}},{\"id\":\"9YtwI_uvUW\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Average Transaction Till Date\",\"col\":4}},{\"id\":\"TSV8PAAD13\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Payment Requests Today\",\"col\":4}},{\"id\":\"goBpHf3O7p\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Succeful Payment Today\",\"col\":4}},{\"id\":\"wYRRXH5o7q\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Collections This Month\",\"col\":4}},{\"id\":\"6yqjR8vQDM\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Average Transaction Value Till Date\",\"col\":4}},{\"id\":\"hO-HldAGNP\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">\ud83d\udcb8<b>Payout Operations</b></span>\",\"col\":12}},{\"id\":\"Op4Aws-FoW\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Processed Payouts Today\",\"col\":4}},{\"id\":\"3zA-tPq1V8\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pending Approvals\",\"col\":4}},{\"id\":\"vLiJILuH2L\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Payouts This Month\",\"col\":4}},{\"id\":\"NlZCGEe7fO\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Failed Payouts Tilil Date\",\"col\":4}},{\"id\":\"EtikH9I0jr\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">\ud83c\udfe6 Pocket Management<b></b></span>\",\"col\":12}},{\"id\":\"WJEd1YFXiG\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Active Pockets\",\"col\":4}},{\"id\":\"Z2zY1ap_Qy\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total Pocket Balance\",\"col\":4}},{\"id\":\"ju_nGay-wz\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Pocket Transfers Today\",\"col\":4}},{\"id\":\"dR_pErHWeX\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">\u26a1 Quick Actions</span>\",\"col\":12}},{\"id\":\"Fe3KVo8-8y\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SeerBit Payment Requests\",\"col\":4}},{\"id\":\"hFSxe_H3wP\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SeerBit Payout Requests\",\"col\":4}},{\"id\":\"EBX_l9rm8e\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SeerBit Transaction Logs\",\"col\":4}},{\"id\":\"VCtutr0d-Y\",\"type\":\"card\",\"data\":{\"card_name\":\"SeerBit Ledger\",\"col\":4}},{\"id\":\"2d6LtbSJZJ\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"SeerBit Pockets\",\"col\":4}},{\"id\":\"6k2lnficKY\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "creation": "2025-08-14 10:01:30.668626",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "income",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "SeerBit Operations",
+ "links": [
+  {
+   "description": "Different ",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Payment Analytics",
+   "link_count": 0,
+   "link_to": "SeerBit Payment Analytics",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payout Analytics",
+   "link_count": 0,
+   "link_to": "SeerBit Payout Analytics",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "SeerBit Payout Request",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pocker summary",
+   "link_count": 0,
+   "link_to": "SeerBit Pocket Balance Report",
+   "link_type": "Report",
+   "onboard": 0,
+   "report_ref_doctype": "SeerBit Pocket",
+   "type": "Link"
+  },
+  {
+   "description": "Different Table Ledger for SeerBit ERPNext Integrations.",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SeerBit Ledger",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "SeerBit Settings",
+   "link_count": 0,
+   "link_to": "SeerBit Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Request",
+   "link_count": 0,
+   "link_to": "SeerBit Payment Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payout Request",
+   "link_count": 0,
+   "link_to": "SeerBit Payout Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pocket Details",
+   "link_count": 0,
+   "link_to": "SeerBit Pocket",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transaction Logs",
+   "link_count": 0,
+   "link_to": "SeerBit Transaction Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2025-08-14 15:37:45.140478",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Operations",
+ "number_cards": [
+  {
+   "label": "Average Transaction Till Date",
+   "number_card_name": "SeerBit Average Transaction Value"
+  },
+  {
+   "label": "Active Pockets",
+   "number_card_name": "SeerBit Active Pockets"
+  },
+  {
+   "label": "Payment Requests Today",
+   "number_card_name": "SeerBit Today Payment Request Count"
+  },
+  {
+   "label": "Total Pocket Balance",
+   "number_card_name": "SeerBit Total Pocket Balance"
+  },
+  {
+   "label": "Succeful Payment Today",
+   "number_card_name": "SeerBit Payment Request Paid"
+  },
+  {
+   "label": "Pocket Transfers Today",
+   "number_card_name": "SeerBit Pocket Transfers Today"
+  },
+  {
+   "label": "Total Collections This Month",
+   "number_card_name": "SeerBit Total Collections This Month"
+  },
+  {
+   "label": "Average Transaction Value Till Date",
+   "number_card_name": "SeerBit Average Transaction Value"
+  },
+  {
+   "label": "Processed Payouts Today",
+   "number_card_name": "SeerBit Processed Payouts Today"
+  },
+  {
+   "label": "Pending Approvals",
+   "number_card_name": "Seerbit Payout Pending Approvals"
+  },
+  {
+   "label": "Total Payouts This Month",
+   "number_card_name": "SeerBit Total Payouts This Month"
+  },
+  {
+   "label": "Failed Payouts Tilil Date",
+   "number_card_name": "SeerBit Failed Payouts"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "SeerBit Payment Request",
+   "label": "SeerBit Payment Requests",
+   "quick_list_filter": "[[\"SeerBit Payment Request\",\"status\",\"=\",\"Draft\",false],[\"SeerBit Payment Request\",\"status\",\"=\",\"Active\",false]]"
+  },
+  {
+   "document_type": "SeerBit Payout Request",
+   "label": "SeerBit Payout Requests",
+   "quick_list_filter": "[[\"SeerBit Payout Request\",\"status\",\"=\",\"Draft\",false],[\"SeerBit Payout Request\",\"status\",\"=\",\"Pending Approval\",false],[\"SeerBit Payout Request\",\"status\",\"=\",\"Approved\",false]]"
+  },
+  {
+   "document_type": "SeerBit Transaction Log",
+   "label": "SeerBit Transaction Logs",
+   "quick_list_filter": "[[\"SeerBit Transaction Log\",\"creation\",\"Timespan\",\"today\",false],[\"SeerBit Transaction Log\",\"processed_at\",\"Timespan\",\"today\",false]]"
+  },
+  {
+   "document_type": "SeerBit Pocket",
+   "label": "SeerBit Pockets",
+   "quick_list_filter": "[[\"SeerBit Pocket\",\"status\",\"=\",\"Active\",false]]"
+  }
+ ],
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  },
+  {
+   "role": "Accounts Officer"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 29.0,
+ "shortcuts": [],
+ "title": "SeerBit Operations"
+}

@@ -1,329 +1,342 @@
 {
-    "actions": [],
-    "allow_rename": 0,
-    "autoname": "naming_series:",
-    "creation": "2025-08-13 10:30:00.000000",
-    "description": "Manage SeerBit payment requests for invoices and sales orders",
-    "doctype": "DocType",
-    "editable_grid": 1,
-    "engine": "InnoDB",
-    "field_order": [
-        "naming_series",
-        "request_details_section",
-        "reference_doctype",
-        "reference_name",
-        "column_break_4",
-        "payment_type",
-        "status",
-        "customer_section",
-        "customer",
-        "customer_name",
-        "customer_email",
-        "column_break_10",
-        "customer_phone",
-        "billing_address",
-        "amount_section",
-        "amount",
-        "currency",
-        "column_break_15",
-        "fees",
-        "total_amount",
-        "seerbit_details_section",
-        "seerbit_payment_reference",
-        "payment_link",
-        "column_break_20",
-        "redirect_url",
-        "callback_url",
-        "timestamps_section",
-        "request_date",
-        "expiry_date",
-        "column_break_25",
-        "payment_date",
-        "last_updated",
-        "configuration_section",
-        "payment_methods",
-        "description",
-        "column_break_30",
-        "custom_fields",
-        "notes"
-    ],
-    "fields": [
-        {
-            "fieldname": "naming_series",
-            "fieldtype": "Select",
-            "label": "Series",
-            "options": "SBPR-.YYYY.-.#####",
-            "reqd": 1
-        },
-        {
-            "fieldname": "request_details_section",
-            "fieldtype": "Section Break",
-            "label": "Request Details"
-        },
-        {
-            "fieldname": "reference_doctype",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "label": "Reference DocType",
-            "options": "Sales Invoice\nSales Order\nQuotation\nCustom",
-            "reqd": 1
-        },
-        {
-            "fieldname": "reference_name",
-            "fieldtype": "Dynamic Link",
-            "in_list_view": 1,
-            "label": "Reference Document",
-            "options": "reference_doctype"
-        },
-        {
-            "fieldname": "column_break_4",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "payment_type",
-            "fieldtype": "Select",
-            "label": "Payment Type",
-            "options": "One-time\nRecurring\nInstallment",
-            "reqd": 1
-        },
-        {
-            "fieldname": "status",
-            "fieldtype": "Select",
-            "in_list_view": 1,
-            "label": "Status",
-            "options": "Draft\nActive\nPaid\nExpired\nCancelled\nFailed",
-            "reqd": 1
-        },
-        {
-            "fieldname": "customer_section",
-            "fieldtype": "Section Break",
-            "label": "Customer Details"
-        },
-        {
-            "fieldname": "customer",
-            "fieldtype": "Link",
-            "label": "Customer",
-            "options": "Customer"
-        },
-        {
-            "fieldname": "customer_name",
-            "fieldtype": "Data",
-            "in_list_view": 1,
-            "label": "Customer Name",
-            "reqd": 1
-        },
-        {
-            "fieldname": "customer_email",
-            "fieldtype": "Data",
-            "label": "Customer Email",
-            "reqd": 1
-        },
-        {
-            "fieldname": "column_break_10",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "customer_phone",
-            "fieldtype": "Data",
-            "label": "Customer Phone"
-        },
-        {
-            "fieldname": "billing_address",
-            "fieldtype": "Link",
-            "label": "Billing Address",
-            "options": "Address"
-        },
-        {
-            "fieldname": "amount_section",
-            "fieldtype": "Section Break",
-            "label": "Amount Details"
-        },
-        {
-            "fieldname": "amount",
-            "fieldtype": "Currency",
-            "in_list_view": 1,
-            "label": "Amount",
-            "precision": 2,
-            "reqd": 1
-        },
-        {
-            "fieldname": "currency",
-            "fieldtype": "Link",
-            "label": "Currency",
-            "options": "Currency",
-            "reqd": 1
-        },
-        {
-            "fieldname": "column_break_15",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "fees",
-            "fieldtype": "Currency",
-            "label": "Processing Fees",
-            "precision": 2
-        },
-        {
-            "fieldname": "total_amount",
-            "fieldtype": "Currency",
-            "label": "Total Amount",
-            "precision": 2,
-            "read_only": 1
-        },
-        {
-            "fieldname": "seerbit_details_section",
-            "fieldtype": "Section Break",
-            "label": "SeerBit Details"
-        },
-        {
-            "fieldname": "seerbit_payment_reference",
-            "fieldtype": "Data",
-            "label": "SeerBit Payment Reference",
-            "read_only": 1
-        },
-        {
-            "fieldname": "payment_link",
-            "fieldtype": "Long Text",
-            "label": "Payment Link",
-            "read_only": 1
-        },
-        {
-            "fieldname": "column_break_20",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "redirect_url",
-            "fieldtype": "Data",
-            "label": "Redirect URL"
-        },
-        {
-            "fieldname": "callback_url",
-            "fieldtype": "Data",
-            "label": "Callback URL"
-        },
-        {
-            "fieldname": "timestamps_section",
-            "fieldtype": "Section Break",
-            "label": "Timestamps"
-        },
-        {
-            "fieldname": "request_date",
-            "fieldtype": "Datetime",
-            "label": "Request Date",
-            "reqd": 1
-        },
-        {
-            "fieldname": "expiry_date",
-            "fieldtype": "Datetime",
-            "label": "Expiry Date"
-        },
-        {
-            "fieldname": "column_break_25",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "payment_date",
-            "fieldtype": "Datetime",
-            "label": "Payment Date",
-            "read_only": 1
-        },
-        {
-            "fieldname": "last_updated",
-            "fieldtype": "Datetime",
-            "label": "Last Updated",
-            "read_only": 1
-        },
-        {
-            "fieldname": "configuration_section",
-            "fieldtype": "Section Break",
-            "label": "Configuration"
-        },
-        {
-            "fieldname": "payment_methods",
-            "fieldtype": "Text",
-            "label": "Allowed Payment Methods"
-        },
-        {
-            "fieldname": "description",
-            "fieldtype": "Text",
-            "label": "Description"
-        },
-        {
-            "fieldname": "column_break_30",
-            "fieldtype": "Column Break"
-        },
-        {
-            "fieldname": "custom_fields",
-            "fieldtype": "JSON",
-            "label": "Custom Fields"
-        },
-        {
-            "fieldname": "notes",
-            "fieldtype": "Long Text",
-            "label": "Notes"
-        }
-    ],
-    "icon": "fa fa-credit-card",
-    "idx": 1,
-    "in_create": 1,
-    "links": [],
-    "modified": "2025-08-13 10:30:00.000000",
-    "module": "SeerBit Operations",
-    "name": "SeerBit Payment Request",
-    "naming_rule": "By \"Naming Series\" field",
-    "owner": "Administrator",
-    "permissions": [
-        {
-            "create": 1,
-            "delete": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "Accounts Manager",
-            "share": 1,
-            "submit": 1,
-            "write": 1
-        },
-        {
-            "create": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "Accounts Officer",
-            "share": 1,
-            "submit": 1,
-            "write": 1
-        },
-        {
-            "create": 1,
-            "email": 1,
-            "export": 1,
-            "print": 1,
-            "read": 1,
-            "report": 1,
-            "role": "Sales Manager",
-            "share": 1,
-            "submit": 1,
-            "write": 1
-        },
-        {
-            "read": 1,
-            "report": 1,
-            "role": "Employee"
-        }
-    ],
-    "quick_entry": 1,
-    "search_fields": "customer_name,seerbit_payment_reference,status",
-    "show_name_in_global_search": 1,
-    "sort_field": "request_date",
-    "sort_order": "DESC",
-    "states": [],
-    "title_field": "customer_name",
-    "track_changes": 1,
-    "track_seen": 1,
-    "track_views": 1
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2025-08-13 10:30:00",
+ "description": "Manage SeerBit payment requests for invoices and sales orders",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "request_details_section",
+  "reference_doctype",
+  "reference_name",
+  "column_break_4",
+  "payment_type",
+  "status",
+  "customer_section",
+  "customer",
+  "customer_name",
+  "customer_email",
+  "column_break_10",
+  "customer_phone",
+  "billing_address",
+  "amount_section",
+  "amount",
+  "currency",
+  "column_break_15",
+  "fees",
+  "total_amount",
+  "seerbit_details_section",
+  "seerbit_payment_reference",
+  "payment_link",
+  "column_break_20",
+  "redirect_url",
+  "callback_url",
+  "timestamps_section",
+  "request_date",
+  "expiry_date",
+  "column_break_25",
+  "payment_date",
+  "last_updated",
+  "configuration_section",
+  "payment_methods",
+  "description",
+  "column_break_30",
+  "custom_fields",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "SBPR-.YYYY.-.#####",
+   "reqd": 1
+  },
+  {
+   "fieldname": "request_details_section",
+   "fieldtype": "Section Break",
+   "label": "Request Details"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "Sales Invoice\nSales Order\nQuotation\nCustom",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Reference Document",
+   "options": "reference_doctype"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_type",
+   "fieldtype": "Select",
+   "label": "Payment Type",
+   "options": "One-time\nRecurring\nInstallment",
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nActive\nPaid\nExpired\nCancelled\nFailed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_section",
+   "fieldtype": "Section Break",
+   "label": "Customer Details"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "customer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer_email",
+   "fieldtype": "Data",
+   "label": "Customer Email",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer_phone",
+   "fieldtype": "Data",
+   "label": "Customer Phone"
+  },
+  {
+   "fieldname": "billing_address",
+   "fieldtype": "Link",
+   "label": "Billing Address",
+   "options": "Address"
+  },
+  {
+   "fieldname": "amount_section",
+   "fieldtype": "Section Break",
+   "label": "Amount Details"
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_15",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fees",
+   "fieldtype": "Currency",
+   "label": "Processing Fees",
+   "precision": "2"
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Float",
+   "label": "Total Amount",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "seerbit_details_section",
+   "fieldtype": "Section Break",
+   "label": "SeerBit Details"
+  },
+  {
+   "fieldname": "seerbit_payment_reference",
+   "fieldtype": "Data",
+   "label": "SeerBit Payment Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payment_link",
+   "fieldtype": "Long Text",
+   "label": "Payment Link",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "redirect_url",
+   "fieldtype": "Data",
+   "label": "Redirect URL"
+  },
+  {
+   "fieldname": "callback_url",
+   "fieldtype": "Data",
+   "label": "Callback URL"
+  },
+  {
+   "fieldname": "timestamps_section",
+   "fieldtype": "Section Break",
+   "label": "Timestamps"
+  },
+  {
+   "fieldname": "request_date",
+   "fieldtype": "Datetime",
+   "label": "Request Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expiry_date",
+   "fieldtype": "Datetime",
+   "label": "Expiry Date"
+  },
+  {
+   "fieldname": "column_break_25",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "payment_date",
+   "fieldtype": "Datetime",
+   "label": "Payment Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_updated",
+   "fieldtype": "Datetime",
+   "label": "Last Updated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "configuration_section",
+   "fieldtype": "Section Break",
+   "label": "Configuration"
+  },
+  {
+   "fieldname": "payment_methods",
+   "fieldtype": "Text",
+   "label": "Allowed Payment Methods"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Text",
+   "label": "Description"
+  },
+  {
+   "fieldname": "column_break_30",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "custom_fields",
+   "fieldtype": "JSON",
+   "label": "Custom Fields"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Long Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "SeerBit Payment Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "icon": "fa fa-credit-card",
+ "idx": 1,
+ "in_create": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-08-14 11:53:37.318246",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Payment Request",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Officer",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "report": 1,
+   "role": "Employee"
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "customer_name,seerbit_payment_reference,status",
+ "show_name_in_global_search": 1,
+ "sort_field": "request_date",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "customer_name",
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
 }

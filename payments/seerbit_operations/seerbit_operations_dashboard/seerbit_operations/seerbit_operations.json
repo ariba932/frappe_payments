@@ -1,0 +1,29 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "chart": "SeerBit Payment Collections",
+   "width": "Half"
+  },
+  {
+   "chart": "SeerBit Payout Summary",
+   "width": "Half"
+  },
+  {
+   "chart": "SeerBit Transactions",
+   "width": "Half"
+  }
+ ],
+ "creation": "2025-08-14 11:26:38.276132",
+ "dashboard_name": "SeerBit Operations",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 1,
+ "is_standard": 1,
+ "modified": "2025-08-14 11:26:38.276132",
+ "modified_by": "Administrator",
+ "module": "SeerBit Operations",
+ "name": "SeerBit Operations",
+ "owner": "Administrator"
+}
