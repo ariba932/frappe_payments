@@ -14,7 +14,8 @@ class SeerBitPocketTransfers:
     """Pocket-to-pocket transfer operations"""
     
     def __init__(self):
-        self.settings = frappe.get_doc("SeerBit Settings")
+        from ..core.api_client import get_seerbit_settings
+        self.settings = get_seerbit_settings()
         self.api_client = get_api_client(self.settings)
         
         if not self.settings.is_enabled:
@@ -338,7 +339,8 @@ def get_department_pocket_balance(department_name):
         frappe.throw(_("No active sub-pocket found for department: {0}").format(department_name))
     
     # Get balance using API client
-    settings = frappe.get_doc("SeerBit Settings")
+    from ..core.api_client import get_seerbit_settings, get_api_client
+    settings = get_seerbit_settings()
     api_client = get_api_client(settings)
     
     try:
@@ -374,7 +376,8 @@ def get_all_department_balances(company=None):
                                 fields=["department", "sub_pocket_id", "business_name"])
     
     balances = []
-    settings = frappe.get_doc("SeerBit Settings")
+    from ..core.api_client import get_seerbit_settings, get_api_client
+    settings = get_seerbit_settings()
     api_client = get_api_client(settings)
     
     for sub_pocket in sub_pockets:

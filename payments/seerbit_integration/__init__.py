@@ -111,13 +111,14 @@ def get_integration_info():
     import frappe
     
     try:
-        settings = frappe.get_doc("SeerBit Settings")
+        from .core.api_client import get_seerbit_settings
+        settings = get_seerbit_settings()
         
         return {
             "version": __version__,
             "title": __title__,
             "description": __description__,
-            "enabled": settings.is_enabled,
+            "enabled": settings.is_active,
             "sandbox_mode": settings.sandbox_mode,
             "payouts_enabled": settings.get("enable_payouts", 0),
             "modules": {

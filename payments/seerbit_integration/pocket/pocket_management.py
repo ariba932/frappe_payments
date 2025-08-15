@@ -10,11 +10,12 @@ from frappe.utils import nowdate, flt
 from ..core.api_client import get_api_client
 
 
-class SeerBitPocketManager:
-    """Core pocket management operations"""
+class SeerBitPocketOperations:
+    """Main pocket management operations"""
     
     def __init__(self):
-        self.settings = frappe.get_doc("SeerBit Settings")
+        from ..core.api_client import get_seerbit_settings
+        self.settings = get_seerbit_settings()
         self.api_client = get_api_client(self.settings)
         
         if not self.settings.is_enabled:

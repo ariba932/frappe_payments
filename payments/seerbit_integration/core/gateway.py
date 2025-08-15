@@ -11,11 +11,11 @@ from .api_client import get_api_client
 
 
 class SeerBitGateway:
-    """Unified SeerBit Payment Gateway Interface"""
+    """Main SeerBit gateway for payment processing"""
     
-    def __init__(self, gateway_name="SeerBit"):
-        self.gateway_name = gateway_name
-        self.settings = frappe.get_doc("SeerBit Settings")
+    def __init__(self):
+        from .api_client import get_seerbit_settings
+        self.settings = get_seerbit_settings()
         self.api_client = get_api_client(self.settings)
         
         if not self.settings.is_enabled:

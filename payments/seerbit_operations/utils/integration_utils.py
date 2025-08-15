@@ -280,31 +280,42 @@ def sync_all_pocket_balances():
         return {"status": "error", "message": str(e)}
 
 
-def auto_create_payment_requests():
-    """Auto create payment requests for eligible invoices"""
+def auto_create_payment_requests(doc=None, method=None):
+    """Auto create payment requests for eligible invoices or specific document"""
     
-    # Get invoices with SeerBit enabled but no payment request
-    invoices = frappe.db.sql("""
-        SELECT name, outstanding_amount
-        FROM `tabSales Invoice`
-        WHERE docstatus = 1
-        AND enable_seerbit_payment = 1
-        AND (seerbit_payment_request IS NULL OR seerbit_payment_request = '')
-        AND outstanding_amount > 0
-        AND DATEDIFF(CURDATE(), posting_date) <= 30
-    """, as_dict=1)
-    
-    created_count = 0
-    for invoice in invoices:
+    if doc and doc.doctype == "Sales Invoice":
+        # Create payment request for specific invoice
         try:
-            result = create_payment_request_from_sales_invoice(invoice.name)
-            if result.get("status") == "success":
-                created_count += 1
+            if doc.enable_seerbit_payment and doc.outstanding_amount > 0:
+                result = create_payment_request_from_sales_invoice(doc.name)
+                if result.get("status") == "success":
+                    frappe.msgprint(f"SeerBit payment request created: {result.get('payment_request')}")
         except Exception as e:
-            frappe.log_error(f"Auto payment request creation error for {invoice.name}: {str(e)}", "SeerBit Auto Creation")
-    
-    if created_count > 0:
-        frappe.log_error(f"Auto created {created_count} payment requests", "SeerBit Auto Creation")
+            frappe.log_error(f"Error creating payment request for {doc.name}: {str(e)}", "SeerBit Integration")
+    else:
+        # Bulk create for all eligible invoices (scheduled task)
+        # Get invoices with SeerBit enabled but no payment request
+        invoices = frappe.db.sql("""
+            SELECT name, outstanding_amount
+            FROM `tabSales Invoice`
+            WHERE docstatus = 1
+            AND enable_seerbit_payment = 1
+            AND (seerbit_payment_request IS NULL OR seerbit_payment_request = '')
+            AND outstanding_amount > 0
+            AND DATEDIFF(CURDATE(), posting_date) <= 30
+        """, as_dict=1)
+        
+        created_count = 0
+        for invoice in invoices:
+            try:
+                result = create_payment_request_from_sales_invoice(invoice.name)
+                if result.get("status") == "success":
+                    created_count += 1
+            except Exception as e:
+                frappe.log_error(f"Auto payment request creation error for {invoice.name}: {str(e)}", "SeerBit Auto Creation")
+        
+        if created_count > 0:
+            frappe.log_error(f"Auto created {created_count} payment requests", "SeerBit Auto Creation")
 
 
 def auto_verify_pending_payments():
@@ -328,4 +339,84 @@ def auto_verify_pending_payments():
         except Exception as e:
             frappe.log_error(f"Auto verification error for {payment.name}: {str(e)}", "SeerBit Auto Verification")
     
+def auto_verify_pending_payments():
+    """Auto verify pending payment requests"""
+    
+    # Get pending payment requests
+    pending_payments = frappe.get_all("SeerBit Payment Request",
+        filters={
+            "status": "Active",
+            "seerbit_payment_reference": ["!=", ""]
+        },
+        fields=["name"]
+    )
+    
+    verified_count = 0
+    for payment in pending_payments:
+        try:
+            payment_doc = frappe.get_doc("SeerBit Payment Request", payment.name)
+            payment_doc.verify_payment()
+            verified_count += 1
+        except Exception as e:
+            frappe.log_error(f"Auto verification error for {payment.name}: {str(e)}", "SeerBit Auto Verification")
+    
     return verified_count
+
+
+def auto_create_payout_requests(doc, method):
+    """Auto create payout requests for Purchase Invoices"""
+    
+    if not doc.enable_seerbit_payout:
+        return
+    
+    if doc.outstanding_amount <= 0:
+        return
+    
+    try:
+        result = create_payout_request_from_purchase_invoice(doc.name)
+        if result.get("status") == "success":
+            frappe.msgprint(f"SeerBit payout request created: {result.get('payout_request')}")
+    except Exception as e:
+        frappe.log_error(f"Error creating payout request for {doc.name}: {str(e)}", "SeerBit Integration")
+
+
+def auto_create_department_pocket(doc, method):
+    """Auto create pocket for department if enabled"""
+    
+    if not doc.enable_seerbit_pocket:
+        return
+    
+    if not doc.auto_create_pocket:
+        return
+    
+    try:
+        result = create_department_pocket(doc.name)
+        if result.get("status") == "success":
+            frappe.msgprint(f"SeerBit department pocket created: {result.get('pocket')}")
+    except Exception as e:
+        frappe.log_error(f"Error creating department pocket for {doc.name}: {str(e)}", "SeerBit Integration")
+
+
+def validate_supplier_bank_details(doc, method):
+    """Validate supplier bank details for SeerBit payout eligibility"""
+    
+    if not doc.seerbit_payout_enabled:
+        return
+    
+    if not doc.default_bank_account:
+        frappe.msgprint("Default bank account is required for SeerBit payouts", alert=True)
+        return
+    
+    if not doc.seerbit_bank_code:
+        frappe.msgprint("SeerBit bank code is required for payouts", alert=True)
+        return
+    
+    # Auto-verify account if both bank account and code are set
+    if doc.default_bank_account and doc.seerbit_bank_code and not doc.account_verification_status:
+        try:
+            result = verify_supplier_bank_account(doc.name)
+            if result.get("status") == "success":
+                doc.account_verification_status = "Verified"
+                doc.account_verification_date = now()
+        except Exception as e:
+            frappe.log_error(f"Error verifying supplier account for {doc.name}: {str(e)}", "SeerBit Validation")

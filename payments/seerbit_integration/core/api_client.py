@@ -18,20 +18,42 @@ class SeerBitAPIClient:
     """Centralized SeerBit API client for all operations"""
     
     def __init__(self, settings_doc=None):
-        self.settings = settings_doc or frappe.get_doc("SeerBit Settings")
-        self.base_url = "https://seerbitapi.com" if not self.settings.sandbox_mode else "https://sandbox.seerbitapi.com"
-        self.pocket_base_url = "https://pocket.seerbitapi.com" if not self.settings.sandbox_mode else "https://sandbox.seerbitapi.com"
+        self.settings = settings_doc or self._get_seerbit_settings()
+        # Use 'environment' field instead of 'sandbox_mode'
+        is_sandbox = getattr(self.settings, 'environment', 'Production') == 'Sandbox'
+        self.base_url = "https://sandbox.seerbitapi.com" if is_sandbox else "https://seerbitapi.com"
+        self.pocket_base_url = "https://sandbox.seerbitapi.com" if is_sandbox else "https://pocket.seerbitapi.com"
         self._encrypted_key = None
         self._bearer_token = None
+    
+    def _get_seerbit_settings(self):
+        """Get SeerBit Settings document with standard doctype approach"""
+        try:
+            # Try to get the specific "Seerbit Gateway" record
+            settings = frappe.get_doc("SeerBit Settings", "Seerbit Gateway")
+            if not settings:
+                frappe.throw(_("SeerBit Settings record 'Seerbit Gateway' not found"))
+            return settings
+        except frappe.DoesNotExistError:
+            # If "Seerbit Gateway" doesn't exist, try to get any active settings
+            settings_list = frappe.get_all("SeerBit Settings", 
+                filters={"is_active": 1}, 
+                limit=1
+            )
+            if settings_list:
+                return frappe.get_doc("SeerBit Settings", settings_list[0].name)
+            else:
+                frappe.throw(_("No active SeerBit Settings found. Please create a SeerBit Settings record named 'Seerbit Gateway'"))
     
     def get_encrypted_key(self, force_refresh=False):
         """Get encrypted key for standard API authentication"""
         if self._encrypted_key and not force_refresh:
             return self._encrypted_key
             
-        private_key = self.settings.get_password("private_key")
+        # Use 'secret_key' field from the SeerBit Settings doctype
+        private_key = self.settings.get_password("secret_key")
         if not private_key:
-            frappe.throw(_("Private key not found in SeerBit Settings"))
+            frappe.throw(_("Secret key not found in SeerBit Settings"))
         
         url = f"{self.base_url}/api/v2/encrypt/keys"
         headers = {"Content-Type": "application/json"}
@@ -50,14 +72,15 @@ class SeerBitAPIClient:
         if self._bearer_token and not force_refresh:
             return self._bearer_token
             
-        if not self.settings.pocket_email or not self.settings.pocket_password:
-            frappe.throw(_("Pocket email and password required for enhanced operations"))
+        # Use correct field names from SeerBit Settings doctype
+        if not self.settings.payout_email or not self.settings.payout_password:
+            frappe.throw(_("Payout email and password required for enhanced operations"))
         
         url = f"{self.pocket_base_url}/pocket/authenticate"
         headers = {"Content-Type": "application/json"}
         data = {
-            "email": self.settings.pocket_email,
-            "password": self.settings.get_password("pocket_password")
+            "email": self.settings.payout_email,
+            "password": self.settings.get_password("payout_password")
         }
         
         response = self._make_request("POST", url, headers=headers, json_data=data)
@@ -102,6 +125,42 @@ class SeerBitAPIClient:
             return response["data"]["payments"]
         else:
             frappe.throw(_("Payment creation failed: {0}").format(response.get("message", "Unknown error")))
+    
+    def create_payment_link(self, payment_data):
+        """Create payment link for checkout - alias for create_payment with better return format"""
+        try:
+            # Map the payment_data to the expected kwargs format
+            kwargs = {
+                "amount": payment_data.get("amount"),
+                "currency": payment_data.get("currency", "NGN"),
+                "country": payment_data.get("country", "NG"),
+                "payment_reference": payment_data.get("productId", frappe.generate_hash(length=12)),
+                "email": payment_data.get("email"),
+                "full_name": payment_data.get("fullName", ""),
+                "callback_url": payment_data.get("callbackUrl"),
+                "productId": payment_data.get("productId"),
+                "productDescription": payment_data.get("productDescription")
+            }
+            
+            # Create the payment using the existing method
+            payment_response = self.create_payment(**kwargs)
+            
+            # Return in the expected format for SeerBitPaymentRequest
+            return {
+                "status": "SUCCESS",
+                "data": {
+                    "reference": payment_response.get("paymentReference", kwargs["payment_reference"]),
+                    "redirectLink": payment_response.get("redirectLink", ""),
+                    "paymentReference": payment_response.get("paymentReference", kwargs["payment_reference"])
+                }
+            }
+            
+        except Exception as e:
+            frappe.log_error(f"Payment link creation error: {str(e)}", "SeerBit Payment Link")
+            return {
+                "status": "FAILED",
+                "message": str(e)
+            }
     
     def verify_payment(self, payment_reference):
         """Verify payment status"""
@@ -151,7 +210,7 @@ class SeerBitAPIClient:
     def generate_otp_for_payout(self, pocket_id=None):
         """Generate OTP for enhanced payout flow using correct endpoint"""
         bearer_token = self.get_bearer_token()
-        pocket_id = pocket_id or self.settings.pocket_id
+        pocket_id = pocket_id or self.settings.default_pocket_id
         
         if not pocket_id:
             frappe.throw(_("Pocket ID is required for OTP generation"))
@@ -205,7 +264,7 @@ class SeerBitAPIClient:
     def execute_enhanced_payout(self, payout_data, otp, signature, pocket_id=None):
         """Execute enhanced payout using correct SeerBit endpoint and flow"""
         bearer_token = self.get_bearer_token()
-        pocket_id = pocket_id or self.settings.pocket_id
+        pocket_id = pocket_id or self.settings.default_pocket_id
         
         if not pocket_id:
             frappe.throw(_("Pocket ID is required for enhanced payout"))
@@ -315,7 +374,7 @@ class SeerBitAPIClient:
     def get_wallet_balance(self, pocket_id=None):
         """Get wallet balance for payout operations using correct endpoint"""
         bearer_token = self.get_bearer_token()
-        pocket_id = pocket_id or self.settings.pocket_id
+        pocket_id = pocket_id or self.settings.default_pocket_id
         
         if not pocket_id:
             frappe.throw(_("Pocket ID is required for balance check"))
@@ -478,3 +537,23 @@ class SeerBitAPIClient:
 def get_api_client(settings_doc=None):
     """Factory function to get SeerBit API client"""
     return SeerBitAPIClient(settings_doc)
+
+
+def get_seerbit_settings():
+    """Helper function to get SeerBit Settings document consistently across modules"""
+    try:
+        # Try to get the specific "Seerbit Gateway" record
+        settings = frappe.get_doc("SeerBit Settings", "Seerbit Gateway")
+        if not settings:
+            frappe.throw(_("SeerBit Settings record 'Seerbit Gateway' not found"))
+        return settings
+    except frappe.DoesNotExistError:
+        # If "Seerbit Gateway" doesn't exist, try to get any active settings
+        settings_list = frappe.get_all("SeerBit Settings", 
+            filters={"is_active": 1}, 
+            limit=1
+        )
+        if settings_list:
+            return frappe.get_doc("SeerBit Settings", settings_list[0].name)
+        else:
+            frappe.throw(_("No active SeerBit Settings found. Please create a SeerBit Settings record named 'Seerbit Gateway'"))

@@ -39,7 +39,7 @@ class SeerBitPaymentRequest(Document):
             self.callback_url = get_url(f"/api/method/payments.seerbit_integration.core.webhooks.payment_callback")
         
         if not self.redirect_url:
-            self.redirect_url = get_url("/payment_success")
+            self.redirect_url = get_url("/seerbit_payment_status")  # Use SeerBit-specific page
 
     def on_submit(self):
         """Create payment link on SeerBit when submitting"""
@@ -48,9 +48,12 @@ class SeerBitPaymentRequest(Document):
     def create_payment_link(self):
         """Create payment link on SeerBit"""
         try:
+            # Create payment via SeerBit
+            client = SeerBitAPIClient()
+            
             # Prepare payment data
             payment_data = {
-                "publicKey": frappe.conf.get("seerbit_public_key"),
+                "publicKey": client.settings.public_key,  # Get from SeerBit Settings instead of frappe.conf
                 "amount": str(self.total_amount or self.amount),
                 "currency": self.currency,
                 "country": "NG",
@@ -67,8 +70,6 @@ class SeerBitPaymentRequest(Document):
             if self.customer_phone:
                 payment_data["mobileNumber"] = self.customer_phone
             
-            # Create payment via SeerBit
-            client = SeerBitAPIClient()
             response = client.create_payment_link(payment_data)
             
             if response.get("status") == "SUCCESS":

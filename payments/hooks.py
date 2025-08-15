@@ -76,22 +76,15 @@ after_install = [
     "payments.seerbit_operations.custom_fields.create_fields.create_seerbit_custom_fields"
 ]
 
-# Installation hooks
-# ------------------
-after_install = "payments.utils.utils.create_custom_fields"
-
 # Uninstallation
 # ------------
 
-before_uninstall = "payments.utils.delete_custom_fields"
-after_uninstall = "payments.utils.delete_seerbit_custom_fields"
-
-# Uninstallation hooks  
-# --------------------
 before_uninstall = [
+    "payments.utils.delete_custom_fields",
     "payments.utils.utils.delete_seerbit_custom_fields",
     "payments.utils.utils.cleanup_seerbit_bank_records"
 ]
+after_uninstall = "payments.utils.delete_seerbit_custom_fields"
 
 # Desk Notifications
 # ------------------
@@ -141,11 +134,12 @@ doc_events = {
     },
     "Supplier": {
         "validate": "payments.seerbit_operations.utils.integration_utils.validate_supplier_bank_details"
-    },
-    "SeerBit Order": {
-        "on_payment_captured": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_captured",
-        "on_payment_failed": "payments.payment_gateways.doctype.seerbit_settings.seerbit_gateway.on_payment_failed"
     }
+    # Note: SeerBit Order doctype is commented out until it's properly implemented
+    # "SeerBit Order": {
+    #     "on_payment_captured": "payments.seerbit_operations.doctype.seerbit_settings.seerbit_settings.on_payment_captured",
+    #     "on_payment_failed": "payments.seerbit_operations.doctype.seerbit_settings.seerbit_settings.on_payment_failed"
+    # }
 }
 
 

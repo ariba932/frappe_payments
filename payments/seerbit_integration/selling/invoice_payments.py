@@ -7,17 +7,17 @@ Consolidates all selling-related payment functionality
 import frappe
 from frappe import _
 from frappe.utils import nowdate, get_request_site_address
-from ..core.api_client import get_api_client
+from ..core.api_client import SeerBitAPIClient
 
 
 class SeerBitSellingOperations:
     """Handles all selling operations - invoices and sales orders"""
     
     def __init__(self):
-        self.settings = frappe.get_doc("SeerBit Settings")
-        self.api_client = get_api_client(self.settings)
+        self.api_client = SeerBitAPIClient()
+        self.settings = self.api_client.settings
         
-        if not self.settings.is_enabled:
+        if not self.settings.is_active:
             frappe.throw(_("SeerBit is not enabled"))
     
     def create_invoice_payment_link(self, invoice_name, include_charges=False):
@@ -29,9 +29,11 @@ class SeerBitSellingOperations:
         
         # Calculate amount including charges if requested
         payment_amount = invoice.outstanding_amount
-        if include_charges and self.settings.get("transaction_charge_percentage", 0) > 0:
-            charge_percentage = self.settings.transaction_charge_percentage
-            payment_amount = payment_amount * (1 + charge_percentage / 100)
+        # Note: Transaction charges would be configured in SeerBit Settings if needed
+        # For now, using the base outstanding amount
+        if include_charges:
+            # Could add transaction charge calculation here based on SeerBit Settings
+            pass
         
         # Generate unique payment reference
         payment_reference = f"INV-{invoice.name}-{frappe.generate_hash(length=8)}"
@@ -43,7 +45,7 @@ class SeerBitSellingOperations:
             "email": invoice.contact_email or invoice.customer_email_id or "noreply@company.com",
             "full_name": invoice.customer_name,
             "payment_reference": payment_reference,
-            "country": self.settings.get("default_country", "NG"),
+            "country": "NG",  # Default to Nigeria
             "productId": f"INV-{invoice.name}",
             "productDescription": f"Payment for Invoice {invoice.name}",
             "callback_url": get_request_site_address(True) + f"/api/method/payments.seerbit_integration.core.webhooks.payment_callback?type=invoice&doc={invoice.name}"
@@ -106,7 +108,7 @@ class SeerBitSellingOperations:
             "email": sales_order.contact_email or "noreply@company.com",
             "full_name": sales_order.customer_name,
             "payment_reference": payment_reference,
-            "country": self.settings.get("default_country", "NG"),
+            "country": "NG",  # Default to Nigeria
             "productId": f"SO-{sales_order.name}",
             "productDescription": f"Advance payment for Sales Order {sales_order.name}",
             "callback_url": get_request_site_address(True) + f"/api/method/payments.seerbit_integration.core.webhooks.payment_callback?type=sales_order&doc={sales_order.name}"
@@ -328,3 +330,23 @@ def send_payment_link_email(document_type, document_name, customer_email, custom
     """API endpoint for sending payment link email"""
     selling_ops = SeerBitSellingOperations()
     return selling_ops.send_payment_link_email(document_type, document_name, customer_email, custom_message)
+
+
+def on_payment_complete(doc, method):
+    """Hook function called when payment is completed for Sales Invoice"""
+    try:
+        # Check if this invoice has a SeerBit payment that was completed
+        if hasattr(doc, 'seerbit_payment_reference') and doc.seerbit_payment_reference:
+            # Check if there's a completed SeerBit Order for this payment
+            order = frappe.get_value("SeerBit Order", {
+                "payment_reference": doc.seerbit_payment_reference,
+                "status": "Completed"
+            })
+            
+            if order:
+                # Update invoice status to reflect completed payment
+                doc.db_set("seerbit_payment_status", "Paid")
+                frappe.log_error(f"SeerBit payment completed for invoice {doc.name}", "SeerBit Payment Complete")
+                
+    except Exception as e:
+        frappe.log_error(f"Error in on_payment_complete hook for {doc.name}: {str(e)}", "SeerBit Hook Error")

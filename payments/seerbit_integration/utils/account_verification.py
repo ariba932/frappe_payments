@@ -9,26 +9,23 @@ from frappe import _
 from ..core.api_client import get_api_client
 
 
-def verify_beneficiary_account(account_number, bank_code, expected_name=None):
+def verify_beneficiary_account(account_number, bank_code, beneficiary_name=None):
     """
-    Verify bank account details using SeerBit Account Enquiry API
+    Verify a beneficiary bank account using SeerBit API
     
     Args:
         account_number (str): Bank account number
-        bank_code (str): SeerBit bank code
-        expected_name (str, optional): Expected account holder name for validation
+        bank_code (str): Bank code (e.g., "044" for Access Bank)
+        beneficiary_name (str, optional): Expected account holder name
     
     Returns:
-        dict: Verification result with status and details
+        dict: Verification result with account details
     """
     try:
-        settings = frappe.get_doc("SeerBit Settings")
-        if not settings.is_enabled:
-            return {
-                "verified": False,
-                "message": "SeerBit is not enabled",
-                "status": "error"
-            }
+        from ..core.api_client import get_seerbit_settings, get_api_client
+        settings = get_seerbit_settings()
+        if not settings.is_active:
+            frappe.throw(_("SeerBit is not enabled"))
         
         # Check if account verification is enabled
         if not settings.get("enable_account_verification", 1):

@@ -2,54 +2,57 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:settings_name",
- "creation": "2025-08-14 17:09:26.032140",
+ "creation": "2024-08-13 18:00:00.000000",
  "doctype": "DocType",
+ "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "settings_name",
-  "api_configuration_section",
+  "section_break_2",
   "environment",
   "environment_type",
   "public_key",
   "secret_key",
   "api_base_url",
   "checkout_url",
-  "column_break_ftww",
+  "column_break_8",
   "merchant_id",
-  "default_pocket_id",
-  "api_timeout_seconds",
-  "payout_email",
-  "payout_password",
-  "payout_settings_section",
+  "pocket_id",
+  "timeout",
+  "section_break_11",
   "enable_payouts",
   "auto_process_approved_payouts",
   "require_otp_for_payouts",
   "default_payout_currency",
-  "column_break_trlc",
-  "daily_payout_limit",
-  "monthly_payout_limit",
+  "column_break_15",
+  "payout_daily_limit",
+  "payout_monthly_limit",
   "enable_payout_notifications",
-  "webhook_configuration_section",
+  "section_break_19",
   "webhook_url",
   "webhook_secret",
   "enable_webhooks",
-  "webhook_events_json",
-  "system_settings_section",
+  "column_break_22",
+  "webhook_events",
+  "section_break_24",
   "is_active",
   "last_sync",
-  "created_by",
-  "column_break_tftd",
+  "created_by_user",
+  "column_break_27",
   "notes"
  ],
  "fields": [
   {
    "fieldname": "settings_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Settings Name",
-   "unique": 1
+   "reqd": 1,
+   "unique": 1,
+   "default": "SeerBit Configuration"
   },
   {
-   "fieldname": "api_configuration_section",
+   "fieldname": "section_break_2",
    "fieldtype": "Section Break",
    "label": "API Configuration"
   },
@@ -58,14 +61,16 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Environment",
-   "options": "Sandbox\nProduction"
+   "options": "Sandbox\nProduction",
+   "reqd": 1,
+   "default": "Sandbox"
   },
   {
-   "default": "Test",
    "fieldname": "environment_type",
    "fieldtype": "Select",
    "label": "Environment Type",
-   "options": "Test\nLive"
+   "options": "Test\nLive",
+   "default": "Test"
   },
   {
    "fieldname": "public_key",
@@ -80,19 +85,19 @@
    "reqd": 1
   },
   {
-   "default": "https://seerbitapi.com",
    "fieldname": "api_base_url",
    "fieldtype": "Data",
-   "label": "API Base URL"
+   "label": "API Base URL",
+   "default": "https://seerbitapi.com"
   },
   {
-   "default": "https://checkout.seerbit.com",
    "fieldname": "checkout_url",
    "fieldtype": "Data",
-   "label": "Checkout URL"
+   "label": "Checkout URL",
+   "default": "https://checkout.seerbit.com"
   },
   {
-   "fieldname": "column_break_ftww",
+   "fieldname": "column_break_8",
    "fieldtype": "Column Break"
   },
   {
@@ -101,76 +106,67 @@
    "label": "Merchant ID"
   },
   {
-   "fieldname": "default_pocket_id",
+   "fieldname": "pocket_id",
    "fieldtype": "Data",
    "label": "Default Pocket ID"
   },
   {
-   "fieldname": "api_timeout_seconds",
+   "fieldname": "timeout",
    "fieldtype": "Int",
-   "label": "API Timeout (seconds)"
+   "label": "API Timeout (seconds)",
+   "default": 30
   },
   {
-   "fieldname": "payout_settings_section",
+   "fieldname": "section_break_11",
    "fieldtype": "Section Break",
    "label": "Payout Settings"
   },
   {
-   "default": "1",
    "fieldname": "enable_payouts",
    "fieldtype": "Check",
-   "label": "Enable Payouts"
+   "label": "Enable Payouts",
+   "default": 1
   },
   {
-   "default": "0",
    "fieldname": "auto_process_approved_payouts",
    "fieldtype": "Check",
    "label": "Auto Process Approved Payouts"
   },
   {
-   "default": "1",
    "fieldname": "require_otp_for_payouts",
    "fieldtype": "Check",
-   "label": "Require OTP for Payouts"
+   "label": "Require OTP for Payouts",
+   "default": 1
   },
   {
    "fieldname": "default_payout_currency",
    "fieldtype": "Link",
    "label": "Default Payout Currency",
-   "options": "Currency"
+   "options": "Currency",
+   "default": "NGN"
   },
   {
-   "fieldname": "column_break_trlc",
+   "fieldname": "column_break_15",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "daily_payout_limit",
+   "fieldname": "payout_daily_limit",
    "fieldtype": "Currency",
    "label": "Daily Payout Limit"
   },
   {
-   "fieldname": "monthly_payout_limit",
+   "fieldname": "payout_monthly_limit",
    "fieldtype": "Currency",
    "label": "Monthly Payout Limit"
   },
   {
-   "default": "0",
    "fieldname": "enable_payout_notifications",
    "fieldtype": "Check",
-   "label": "Enable Payout Notifications"
+   "label": "Enable Payout Notifications",
+   "default": 1
   },
   {
-   "fieldname": "payout_email",
-   "fieldtype": "Data",
-   "label": "Payout Email"
-  },
-  {
-   "fieldname": "payout_password",
-   "fieldtype": "Password",
-   "label": "Payout Password"
-  },
-  {
-   "fieldname": "webhook_configuration_section",
+   "fieldname": "section_break_19",
    "fieldtype": "Section Break",
    "label": "Webhook Configuration"
   },
@@ -186,24 +182,28 @@
   },
   {
    "fieldname": "enable_webhooks",
-   "fieldtype": "Data",
+   "fieldtype": "Check",
    "label": "Enable Webhooks"
   },
   {
-   "fieldname": "webhook_events_json",
+   "fieldname": "column_break_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "webhook_events",
    "fieldtype": "Text",
    "label": "Webhook Events (JSON)"
   },
   {
-   "fieldname": "system_settings_section",
+   "fieldname": "section_break_24",
    "fieldtype": "Section Break",
    "label": "System Settings"
   },
   {
-   "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
-   "label": "Is Active"
+   "label": "Is Active",
+   "default": 1
   },
   {
    "fieldname": "last_sync",
@@ -211,13 +211,13 @@
    "label": "Last Sync"
   },
   {
-   "fieldname": "created_by",
+   "fieldname": "created_by_user",
    "fieldtype": "Link",
    "label": "Created By",
    "options": "User"
   },
   {
-   "fieldname": "column_break_tftd",
+   "fieldname": "column_break_27",
    "fieldtype": "Column Break"
   },
   {
@@ -226,55 +226,38 @@
    "label": "Notes"
   }
  ],
- "grid_page_length": 50,
- "index_web_pages_for_search": 1,
+ "icon": "fa fa-cog",
+ "issingle": 1,
  "links": [],
- "modified": "2025-08-14 17:52:13.093920",
+ "modified": "2024-08-13 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "SeerBit Operations",
  "name": "SeerBit Settings",
- "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
    "create": 1,
    "delete": 1,
    "email": 1,
-   "export": 1,
    "print": 1,
    "read": 1,
-   "report": 1,
    "role": "System Manager",
    "share": 1,
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
    "role": "Accounts Manager",
-   "share": 1,
    "write": 1
   },
   {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
    "read": 1,
-   "report": 1,
-   "role": "Accounts Officer",
-   "share": 1,
-   "write": 1
+   "role": "Accounts User"
   }
  ],
- "row_format": "Dynamic",
+ "quick_entry": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "track_changes": 1
 }

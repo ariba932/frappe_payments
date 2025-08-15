@@ -12,8 +12,9 @@ from ..core.api_client import get_api_client
 def sync_bank_codes_from_seerbit():
     """Sync bank codes from SeerBit API to local database"""
     try:
-        settings = frappe.get_doc("SeerBit Settings")
-        if not settings.is_enabled:
+        from ..core.api_client import get_seerbit_settings, get_api_client
+        settings = get_seerbit_settings()
+        if not settings.is_active:
             frappe.throw(_("SeerBit is not enabled"))
         
         api_client = get_api_client(settings)

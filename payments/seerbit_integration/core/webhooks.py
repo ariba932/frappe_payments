@@ -231,29 +231,48 @@ def payment_callback():
     """Handle payment callback from SeerBit"""
     try:
         data = frappe.local.form_dict
-        settings = frappe.get_doc("SeerBit Settings")
+        # Log callback with shorter title to avoid length exceeded error
+        frappe.log_error(f"Code: {data.get('code')}, Ref: {data.get('reference')}", "SeerBit Callback")
+        
+        from .api_client import get_seerbit_settings
+        settings = get_seerbit_settings()
+        
+        # Map SeerBit callback parameters to our expected format
+        # SeerBit sends: code, message, reference, linkingreference
+        # We need: transactionStatus, paymentReference
+        mapped_data = {
+            "transactionStatus": "SUCCESSFUL" if data.get("code") == "00" else "FAILED",
+            "paymentReference": data.get("reference"),
+            "message": data.get("message", ""),
+            "gatewayRef": data.get("linkingreference", ""),
+            "transactionRef": data.get("linkingreference", ""),
+            "code": data.get("code", ""),
+            "originalData": data  # Keep original for debugging
+        }
+        
         webhook_handler = SeerBitWebhookHandler(settings)
         
-        # Process the callback
-        result = webhook_handler._process_direct_webhook({"data": data})
+        # Process the callback with mapped data
+        result = webhook_handler._process_direct_webhook({"data": mapped_data})
         
         # Redirect based on status
-        payment_reference = data.get("paymentReference")
-        transaction_status = data.get("transactionStatus")
+        payment_reference = data.get("reference")
+        code = data.get("code")
         
-        if transaction_status == "SUCCESSFUL":
+        if code == "00":  # Successful transaction
             frappe.local.response["type"] = "redirect"
-            frappe.local.response["location"] = f"/seerbit_payment_success?ref={payment_reference}"
-        else:
+            frappe.local.response["location"] = f"/seerbit_payment_status?ref={payment_reference}&status=success"
+        else:  # Failed transaction
             frappe.local.response["type"] = "redirect"
-            frappe.local.response["location"] = f"/seerbit_payment_failed?ref={payment_reference}"
+            frappe.local.response["location"] = f"/seerbit_payment_status?ref={payment_reference}&status=failed"
         
         return result
         
     except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "SeerBit Payment Callback Error")
+        # Log error with shorter title
+        frappe.log_error(f"Callback error: {str(e)[:80]}", "SeerBit Callback Error")
         frappe.local.response["type"] = "redirect"
-        frappe.local.response["location"] = "/seerbit_payment_error"
+        frappe.local.response["location"] = "/seerbit_payment_status?status=error"
 
 
 @frappe.whitelist(allow_guest=True)
@@ -261,7 +280,8 @@ def webhook_handler():
     """Main webhook endpoint for SeerBit notifications"""
     try:
         webhook_data = frappe.local.form_dict
-        settings = frappe.get_doc("SeerBit Settings")
+        from .api_client import get_seerbit_settings
+        settings = get_seerbit_settings()
         webhook_handler = SeerBitWebhookHandler(settings)
         
         return webhook_handler.process_webhook(webhook_data)
