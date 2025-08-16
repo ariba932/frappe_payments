@@ -6,6 +6,7 @@ from frappe.model.document import Document
 from frappe.utils import now, flt, add_days, get_url
 from payments.seerbit_integration.core.api_client import SeerBitAPIClient
 from payments.seerbit_integration.selling.invoice_payments import SeerBitSellingOperations
+import json
 
 
 class SeerBitPaymentRequest(Document):
@@ -102,37 +103,111 @@ class SeerBitPaymentRequest(Document):
             client = SeerBitAPIClient()
             response = client.verify_payment(self.seerbit_payment_reference)
             
-            if response.get("status") == "SUCCESS":
-                payment_data = response.get("data", {})
-                payment_status = payment_data.get("paymentStatus", "").upper()
-                
-                if payment_status == "SUCCESSFUL":
-                    self.db_set("status", "Paid")
-                    self.db_set("payment_date", now())
-                    
-                    # Process the payment in ERPNext
-                    self.process_successful_payment(payment_data)
-                    
-                    frappe.msgprint("Payment verified and processed successfully")
-                    
-                elif payment_status == "FAILED":
-                    self.db_set("status", "Failed")
-                    frappe.msgprint("Payment failed")
-                    
-                else:
-                    frappe.msgprint(f"Payment status: {payment_status}")
-                
-                # Create transaction log
-                self.create_transaction_log("Payment Verification", response)
-                
-                return payment_data
-                
-            else:
+            # Handle actual SeerBit API response structure
+            # Response: {'status': 'SUCCESS', 'data': {'code': '00', 'message': 'Successful', 'payments': {...}}}
+            if response.get("status") != "SUCCESS":
                 frappe.throw(f"Payment verification failed: {response.get('message', 'Unknown error')}")
                 
+            payment_data = response.get("data", {})
+            payments_info = payment_data.get("payments", {})
+            
+            # Check for successful payment - SeerBit uses code "00" for success
+            gateway_code = payments_info.get("gatewayCode")
+            data_code = payment_data.get("code")
+            
+            if gateway_code == "00" or data_code == "00":
+                # Payment successful
+                self.db_set("status", "Paid")
+                self.db_set("payment_date", now())
+                # self.db_set("transaction_reference", payments_info.get("gatewayref", ""))
+                
+                # Update transaction log with full payment details
+                self._create_or_update_transaction_log(response)
+                
+                # Process the payment in ERPNext
+                self.process_successful_payment(payment_data)
+                
+                frappe.msgprint("Payment verified and processed successfully")
+                
+            else:
+                # Payment failed
+                self.db_set("status", "Failed")
+                failure_reason = (payments_info.get("gatewayMessage") or 
+                                payment_data.get("message") or 
+                                f"Payment verification failed with code: {gateway_code or data_code}")
+                self.db_set("failure_reason", failure_reason)
+                frappe.msgprint(f"Payment failed: {failure_reason}")
+            
+            return {
+                "status": self.status,
+                "message": "Payment verification completed",
+                "payment_data": payment_data,
+                "gateway_code": gateway_code or data_code
+            }
+                
         except Exception as e:
-            frappe.log_error(f"SeerBit Payment Verification Error: {str(e)}", "SeerBit Payment Request")
-            frappe.throw(f"Error verifying payment: {str(e)}")
+            frappe.log_error(f"Payment verification error: {str(e)}", "SeerBit Payment Verification")
+            frappe.throw(f"SeerBit Payment Verification Error: {str(e)}")
+        
+    def _create_or_update_transaction_log(self, full_response):
+        """Create or update SeerBit Transaction Log with complete API response data"""
+        try:
+            # Check if transaction log already exists based on seerbit_reference
+            existing_log = frappe.db.get_value("SeerBit Transaction Log", 
+                {"seerbit_reference": self.seerbit_payment_reference})
+            
+            payment_data = full_response.get("data", {})
+            payments_info = payment_data.get("payments", {})
+            customers_info = payment_data.get("customers", {})
+            
+            # Map to actual fields that exist in SeerBit Transaction Log doctype
+            log_data = {
+                "doctype": "SeerBit Transaction Log",
+                "transaction_type": "Payment Collection",
+                "reference_doctype": self.reference_doctype,
+                "reference_name": self.reference_name,
+                "seerbit_reference": self.seerbit_payment_reference,
+                "pocket_id": payments_info.get("productId", ""),  # Use productId as pocket reference
+                "payment_method": payments_info.get("paymentType", ""),
+                "amount": flt(payments_info.get("amount", 0)),
+                "currency": payments_info.get("currency", "NGN"),
+                "fees": flt(payments_info.get("fee", 0)),
+                "net_amount": flt(payments_info.get("amount", 0)) - flt(payments_info.get("fee", 0)),
+                "status": "Success" if payment_data.get("code") == "00" else "Failed",
+                "action": "Payment Verification",
+                "timestamp": now(),
+                "processed_at": payments_info.get("completionTime", now()),
+                "response_code": payment_data.get("code", ""),
+                "response_message": json.dumps(full_response, indent=2),  # Put raw response here
+                "api_endpoint": f"/api/v3/payments/query/{self.seerbit_payment_reference}",
+                "request_id": payments_info.get("gatewayref", ""),
+                "details": f"Gateway Message: {payments_info.get('gatewayMessage', '')}\nPayment Type: {payments_info.get('paymentType', '')}\nChannel: {payments_info.get('channelType', '')}",
+                "customer_email": customers_info.get("customerEmail", ""),
+                "customer_phone": customers_info.get("customerMobile", ""),
+                "ip_address": payments_info.get("sourceIP", ""),
+                "user_agent": payments_info.get("deviceType", "")
+            }
+            
+            if existing_log:
+                # Update existing log
+                log_doc = frappe.get_doc("SeerBit Transaction Log", existing_log)
+                for key, value in log_data.items():
+                    if key != "doctype" and value is not None:  # Skip doctype and None values
+                        setattr(log_doc, key, value)
+                log_doc.save(ignore_permissions=True)
+                frappe.msgprint(f"Updated transaction log: {log_doc.name}")
+            else:
+                # Create new log
+                log_doc = frappe.get_doc(log_data)
+                log_doc.insert(ignore_permissions=True)
+                frappe.msgprint(f"Created transaction log: {log_doc.name}")
+            
+            frappe.db.commit()
+            
+        except Exception as e:
+            error_msg = f"Transaction log update error: {str(e)}"
+            frappe.log_error(error_msg, "SeerBit Transaction Log")
+            # Don't throw error here, just log it so payment verification can continue
 
     def process_successful_payment(self, payment_data):
         """Process successful payment in ERPNext"""
@@ -224,6 +299,7 @@ class SeerBitPaymentRequest(Document):
                 "status": "Success" if response_data.get("status") == "SUCCESS" else "Failed",
                 "action": action,
                 "details": str(response_data),
+                "response_message":str(response_data),
                 "customer_email": self.customer_email,
                 "customer_phone": self.customer_phone,
                 "timestamp": now()
@@ -317,3 +393,15 @@ def get_payment_request_status(payment_request):
         "payment_link": doc.payment_link,
         "seerbit_reference": doc.seerbit_payment_reference
     }
+
+
+@frappe.whitelist()
+def verify_payment(payment_request=None, payment_request_name=None):
+    """Module-level function to verify payment for a SeerBit Payment Request"""
+    # Handle both parameter names for flexibility
+    request_name = payment_request or payment_request_name
+    if not request_name:
+        frappe.throw("Payment request name is required")
+    
+    doc = frappe.get_doc("SeerBit Payment Request", request_name)
+    return doc.verify_payment()

@@ -234,8 +234,10 @@ def payment_callback():
         # Log callback with shorter title to avoid length exceeded error
         frappe.log_error(f"Code: {data.get('code')}, Ref: {data.get('reference')}", "SeerBit Callback")
         
-        from .api_client import get_seerbit_settings
-        settings = get_seerbit_settings()
+        # Use SeerBitAPIClient to get settings instead of importing function
+        from .api_client import SeerBitAPIClient
+        client = SeerBitAPIClient()
+        settings = client.settings
         
         # Map SeerBit callback parameters to our expected format
         # SeerBit sends: code, message, reference, linkingreference
@@ -280,8 +282,10 @@ def webhook_handler():
     """Main webhook endpoint for SeerBit notifications"""
     try:
         webhook_data = frappe.local.form_dict
-        from .api_client import get_seerbit_settings
-        settings = get_seerbit_settings()
+        # Use SeerBitAPIClient to get settings instead of importing function
+        from .api_client import SeerBitAPIClient
+        client = SeerBitAPIClient()
+        settings = client.settings
         webhook_handler = SeerBitWebhookHandler(settings)
         
         return webhook_handler.process_webhook(webhook_data)

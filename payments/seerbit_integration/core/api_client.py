@@ -169,11 +169,11 @@ class SeerBitAPIClient:
         headers = {"Authorization": f"Bearer {encrypted_key}"}
         
         response = self._make_request("GET", url, headers=headers)
+        frappe.log_error("Verify response", response)
         
-        if response.get("status") == "SUCCESS":
-            return response["data"]
-        else:
-            frappe.throw(_("Payment verification failed: {0}").format(response.get("message", "Unknown error")))
+        # Return the full response structure to the caller
+        # Let the caller handle the response structure and status checking
+        return response
     
     def initiate_payout(self, **kwargs):
         """Initiate payout using legacy method"""
